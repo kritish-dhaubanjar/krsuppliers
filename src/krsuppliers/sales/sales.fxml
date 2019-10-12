@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            fx:controller="krsuppliers.sales.SaleController"
+            xmlns:fx="http://javafx.com/fxml"
+            prefHeight="400.0" prefWidth="600.0">
+    <children>
+        <TableView layoutX="1.0" layoutY="69.0" prefHeight="530.0" prefWidth="600.0" fx:id="table">
+            <columns>
+                <TableColumn prefWidth="100.0" text="Date" fx:id="_date" />
+                <TableColumn prefWidth="140.0" text="Particular" fx:id="_particular" />
+                <TableColumn prefWidth="50.0" text="Qty" fx:id="_qty"/>
+                <TableColumn text="Rate" fx:id="_rate"/>
+                <TableColumn prefWidth="100.0" text="Discount" fx:id="_discount"/>
+                <TableColumn text="Amount" fx:id="_amount"/>
+            </columns>
+        </TableView>
+        <DatePicker layoutX="55.0" layoutY="25.0" fx:id="from" />
+        <DatePicker layoutX="285.0" layoutY="26.0" fx:id="to"/>
+        <Label layoutX="13.0" layoutY="28.0" text="From">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Label>
+        <Label layoutX="259.0" layoutY="29.0" text="To">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Label>
+        <Button layoutX="505.0" layoutY="26.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="Filter" fx:id="filter" />
+        <Label layoutX="322.0" layoutY="609.0" text="Total:">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </Label>
+        <Text layoutX="427.0" layoutY="622.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0.00" fx:id="total">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Text>
+        <Pane layoutX="603.0" prefHeight="640.0" prefWidth="300.0" style="-fx-background-color: #f3f3f3f3;">
+            <children>
+                <Label layoutX="23.0" layoutY="30.0" text="Sales">
+                    <font>
+                        <Font name="System Bold" size="18.0" />
+                    </font>
+                </Label>
+                <Label layoutX="23.0" layoutY="100.0" text="Date">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </Label>
+                <DatePicker layoutX="102.0" layoutY="96.0" prefHeight="25.0" prefWidth="175.0" fx:id="date" />
+                <MenuButton layoutX="102.0" layoutY="138.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="175.0" text="Particulars" fx:id="menu">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Calculator" />
+                        <MenuItem mnemonicParsing="false" text="Filter" />
+                    </items>
+                </MenuButton>
+                <Label layoutX="21.0" layoutY="142.0" text="Particular">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </Label>
+                <Label layoutX="26.0" layoutY="187.0" text="Qty">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </Label>
+                <TextField layoutX="102.0" layoutY="182.0" prefHeight="25.0" prefWidth="175.0" fx:id="qty"/>
+                <Label layoutX="23.0" layoutY="230.0" text="Rate">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </Label>
+                <TextField layoutX="102.0" layoutY="225.0" prefHeight="25.0" prefWidth="175.0" fx:id="rate"/>
+                <Label layoutX="23.0" layoutY="272.0" text="Discount">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </Label>
+                <TextField layoutX="102.0" layoutY="267.0" prefHeight="25.0" prefWidth="175.0" fx:id="discount"/>
+                <Button layoutX="229.0" layoutY="320.0" mnemonicParsing="false" text="Save" fx:id="save"/>
+                <Button layoutX="162.0" layoutY="320.0" mnemonicParsing="false" text="Delete" fx:id="delete"/>
+            </children></Pane>
+    </children>
+
+</AnchorPane>
