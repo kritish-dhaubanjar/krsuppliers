@@ -24,14 +24,6 @@ public class Sale {
         this.amount = amount;
     }
 
-    /*Upload*/
-    public Sale(int particular_id, int qty, int rate, int discount){
-        this.particular_id = particular_id;
-        this.qty = qty;
-        this.rate = rate;
-        this.discount = discount;
-    }
-
     public int get_id() {
         return _id;
     }

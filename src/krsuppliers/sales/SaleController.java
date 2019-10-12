@@ -1,5 +1,6 @@
 package krsuppliers.sales;
 
+import com.mysql.cj.protocol.Resultset;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public class SaleController {
     @FXML
@@ -33,7 +35,7 @@ public class SaleController {
     @FXML
     TableView<Sale>table;
     @FXML
-    TableColumn<Sale, Integer> _qty, _amount, _discount, _rate,_particular_id;
+    TableColumn<Sale, Integer> _qty, _amount, _discount, _rate, _particular_id, _sale_id;
     @FXML
     TableColumn<Sale, String> _particular;
     @FXML
@@ -58,9 +60,11 @@ public class SaleController {
         particular.getItems().clear();
         clear();
 
-//        particular.setOnAction((e)->{
-//            System.out.println(particular.getSelectionModel().getSelectedItem());
-//        });
+        /*
+        particular.setOnAction((e)->{
+            System.out.println(particular.getSelectionModel().getSelectedItem());
+        });
+        */
 
         setTableViewBinding();
         setParticulars();
@@ -90,8 +94,7 @@ public class SaleController {
             while (resultSet.next()){
                 particulars.add(new Particular(
                         resultSet.getInt("_id"),
-                        resultSet.getString("particular"),
-                        resultSet.getInt("balance_qty"))
+                        resultSet.getString("particular"))
                 );
             }
             particular.getItems().addAll(particulars);
@@ -125,6 +128,7 @@ public class SaleController {
     }
 
     private void deleteSales(Sale sale){
+        if(showAlertDialog("#" + sale.get_id() + " will be deleted!"))
         try {
             Statement query = Database.getConnection().createStatement();
             int num = query.executeUpdate("DELETE FROM sales WHERE _id = " + sale.get_id());
@@ -246,13 +250,14 @@ public class SaleController {
                 return row;
         });
 
+        _sale_id.setCellValueFactory(new PropertyValueFactory<>("_id"));
         _qty.setCellValueFactory(new PropertyValueFactory<>("qty"));
-        _amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
         _discount.setCellValueFactory(new PropertyValueFactory<>("discount"));
         _particular.setCellValueFactory(new PropertyValueFactory<>("particular"));
         _particular_id.setCellValueFactory(new PropertyValueFactory<>("particular_id"));
         _rate.setCellValueFactory(new PropertyValueFactory<>("rate"));
         _date.setCellValueFactory(new PropertyValueFactory<>("date"));
+        _amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
     }
 
     private void clear(){
@@ -270,6 +275,19 @@ public class SaleController {
         alert.setHeaderText(error);
         alert.showAndWait();
     }
+
+    private boolean showAlertDialog(String info){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Are you sure?");
+        alert.setHeaderText(info);
+        Optional<ButtonType> button = alert.showAndWait();
+        if (button.isPresent() && button.get() == ButtonType.OK ){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
 
 
 }
