@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
-<AnchorPane xmlns="http://javafx.com/javafx"
-            fx:controller="krsuppliers.sales.SaleController"
-            xmlns:fx="http://javafx.com/fxml"
-            prefHeight="400.0" prefWidth="600.0">
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="krsuppliers.sales.SaleController">
     <children>
-        <TableView layoutX="1.0" layoutY="69.0" prefHeight="530.0" prefWidth="600.0" fx:id="table">
+        <TableView fx:id="table" layoutX="1.0" layoutY="69.0" prefHeight="530.0" prefWidth="600.0">
             <columns>
-                <TableColumn prefWidth="100.0" text="Date" fx:id="_date" />
-                <TableColumn prefWidth="140.0" text="Particular" fx:id="_particular" />
-                <TableColumn prefWidth="50.0" text="Qty" fx:id="_qty"/>
-                <TableColumn text="Rate" fx:id="_rate"/>
-                <TableColumn prefWidth="100.0" text="Discount" fx:id="_discount"/>
-                <TableColumn text="Amount" fx:id="_amount"/>
+                <TableColumn fx:id="_date" prefWidth="100.0" text="Date" />
+                <TableColumn fx:id="_particular_id" prefWidth="50.0" text="PID" />
+                <TableColumn fx:id="_particular" prefWidth="140.0" text="Particular" />
+                <TableColumn fx:id="_qty" prefWidth="50.0" text="Qty" />
+                <TableColumn fx:id="_rate" text="Rate" />
+                <TableColumn fx:id="_discount" prefWidth="100.0" text="Discount" />
+                <TableColumn fx:id="_amount" text="Amount" />
             </columns>
         </TableView>
-        <DatePicker layoutX="55.0" layoutY="25.0" fx:id="from" />
-        <DatePicker layoutX="285.0" layoutY="26.0" fx:id="to"/>
+        <DatePicker fx:id="from" layoutX="55.0" layoutY="25.0" />
+        <DatePicker fx:id="to" layoutX="285.0" layoutY="26.0" />
         <Label layoutX="13.0" layoutY="28.0" text="From">
             <font>
                 <Font name="System Bold" size="14.0" />
@@ -35,13 +37,13 @@
                 <Font name="System Bold" size="14.0" />
             </font>
         </Label>
-        <Button layoutX="505.0" layoutY="26.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="Filter" fx:id="filter" />
+        <Button fx:id="filter" layoutX="505.0" layoutY="26.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="70.0" text="Filter" />
         <Label layoutX="322.0" layoutY="609.0" text="Total:">
             <font>
                 <Font name="System Bold" size="14.0" />
             </font>
         </Label>
-        <Text layoutX="427.0" layoutY="622.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0.00" fx:id="total">
+        <Text fx:id="total" layoutX="427.0" layoutY="622.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0.00">
             <font>
                 <Font size="14.0" />
             </font>
@@ -58,13 +60,7 @@
                         <Font name="System Bold" size="14.0" />
                     </font>
                 </Label>
-                <DatePicker layoutX="102.0" layoutY="96.0" prefHeight="25.0" prefWidth="175.0" fx:id="date" />
-                <MenuButton layoutX="102.0" layoutY="138.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="175.0" text="Particulars" fx:id="menu">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="Calculator" />
-                        <MenuItem mnemonicParsing="false" text="Filter" />
-                    </items>
-                </MenuButton>
+                <DatePicker fx:id="date" layoutX="102.0" layoutY="96.0" prefHeight="25.0" prefWidth="175.0" />
                 <Label layoutX="21.0" layoutY="142.0" text="Particular">
                     <font>
                         <Font name="System Bold" size="14.0" />
@@ -75,21 +71,22 @@
                         <Font name="System Bold" size="14.0" />
                     </font>
                 </Label>
-                <TextField layoutX="102.0" layoutY="182.0" prefHeight="25.0" prefWidth="175.0" fx:id="qty"/>
+                <TextField fx:id="qty" layoutX="102.0" layoutY="182.0" prefHeight="25.0" prefWidth="175.0" />
                 <Label layoutX="23.0" layoutY="230.0" text="Rate">
                     <font>
                         <Font name="System Bold" size="14.0" />
                     </font>
                 </Label>
-                <TextField layoutX="102.0" layoutY="225.0" prefHeight="25.0" prefWidth="175.0" fx:id="rate"/>
+                <TextField fx:id="rate" layoutX="102.0" layoutY="225.0" prefHeight="25.0" prefWidth="175.0" />
                 <Label layoutX="23.0" layoutY="272.0" text="Discount">
                     <font>
                         <Font name="System Bold" size="14.0" />
                     </font>
                 </Label>
-                <TextField layoutX="102.0" layoutY="267.0" prefHeight="25.0" prefWidth="175.0" fx:id="discount"/>
-                <Button layoutX="229.0" layoutY="320.0" mnemonicParsing="false" text="Save" fx:id="save"/>
-                <Button layoutX="162.0" layoutY="320.0" mnemonicParsing="false" text="Delete" fx:id="delete"/>
+                <TextField fx:id="discount" layoutX="102.0" layoutY="267.0" prefHeight="25.0" prefWidth="175.0" />
+                <Button fx:id="save" layoutX="229.0" layoutY="320.0" mnemonicParsing="false" text="Save" />
+                <Button fx:id="cancel" layoutX="162.0" layoutY="320.0" mnemonicParsing="false" text="Cancel" />
+                <ChoiceBox fx:id="particular" layoutX="102.0" layoutY="138.0" prefHeight="25.0" prefWidth="175.0" />
             </children></Pane>
     </children>
 
