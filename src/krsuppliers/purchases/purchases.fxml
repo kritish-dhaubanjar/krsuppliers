@@ -95,7 +95,7 @@
                     <graphic>
                         <ImageView fitHeight="34.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
                             <image>
-                                <Image url="@./resources/icons/print.png" />
+                                <Image url="@../resources/icons/print.png" />
                             </image>
                         </ImageView>
                     </graphic>
