@@ -25,35 +25,35 @@ public class Controller {
 
     @FXML
     public void initialize(){
-        URL initUrl = getClass().getResource("./sales/sales.fxml");
+        URL initUrl = getClass().getResource("sales/sales.fxml");
         loadFxml(initUrl);
 
         sales.setOnMouseClicked((event)->{
-            final URL url = getClass().getResource("./sales/sales.fxml");
+            final URL url = getClass().getResource("sales/sales.fxml");
             loadFxml(url);
             setBackground(sales);
         });
 
         purchases.setOnMouseClicked((event)->{
-            final URL url = getClass().getResource("./purchases/purchases.fxml");
+            final URL url = getClass().getResource("purchases/purchases.fxml");
             loadFxml(url);
             setBackground(purchases);
         });
 
         stocks.setOnMouseClicked((event)->{
-            final URL url = getClass().getResource("./stocks/stocks.fxml");
+            final URL url = getClass().getResource("stocks/stocks.fxml");
             loadFxml(url);
             setBackground(stocks);
         });
 
         particulars.setOnMouseClicked((event)->{
-            final URL url = getClass().getResource("./particulars/particulars.fxml");
+            final URL url = getClass().getResource("particulars/particulars.fxml");
             loadFxml(url);
             setBackground(particulars);
         });
 
         account.setOnMouseClicked((event)->{
-            final URL url = getClass().getResource("./accounts/accounts.fxml");
+            final URL url = getClass().getResource("accounts/accounts.fxml");
             loadFxml(url);
             setBackground(account);
         });

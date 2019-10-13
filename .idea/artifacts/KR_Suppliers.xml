@@ -1,0 +1,22 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="KR Suppliers">
+    <output-path>$PROJECT_DIR$/out/artifacts/KR_Suppliers</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="krsuppliers.Main" />
+        <option name="description" value="" />
+        <option name="height" value="640" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="title" value="KR Suppliers" />
+        <option name="vendor" value="theGimmickBox" />
+        <option name="version" value="1.0" />
+        <option name="width" value="1024" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="JavaFXApp.jar">
+        <element id="module-output" name="krsuppliers" />
+      </element>
+    </root>
+  </artifact>
+</component>

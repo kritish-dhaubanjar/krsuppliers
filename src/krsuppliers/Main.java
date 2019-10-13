@@ -14,7 +14,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         stage = primaryStage;
-        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("./../resources/icons/theGimmickBox.png")));
+        primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("resources/icons/theGimmickBox.png")));
         Parent root = FXMLLoader.load(getClass().getResource("main.fxml"));
         primaryStage.setTitle("KR Suppliers");
         primaryStage.setResizable(false);
