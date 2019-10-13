@@ -6,14 +6,19 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import krsuppliers.db.Database;
 import krsuppliers.models.Particular;
+import krsuppliers.models.Pdf;
 import krsuppliers.models.Purchase;
+
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,13 +26,15 @@ import java.util.Optional;
 
 public class PurchaseController {
     @FXML
-    Button save, cancel, filter;
+    Button save, cancel, filter, print;
     @FXML
     TextField rate, qty, discount;
     @FXML
     DatePicker from, to, date;
     @FXML
     Text total;
+    @FXML
+    ProgressBar printing;
     @FXML
     ChoiceBox<Particular> particular;
     @FXML
@@ -57,6 +64,7 @@ public class PurchaseController {
         purchases.clear();
         particular.getItems().clear();
         clear();
+        printing.setVisible(false);
 
         /*
         particular.setOnAction((e)->{
@@ -69,6 +77,7 @@ public class PurchaseController {
         filter.setOnAction(e-> filterRecords());
         save.setOnAction(e->savePurchases());
         cancel.setOnAction(e->clear());
+        print.setOnAction(e->printPdf());
 
         from.setValue(LocalDate.now());
         to.setValue(LocalDate.now());
@@ -258,6 +267,23 @@ public class PurchaseController {
         _amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
     }
 
+    private void printPdf(){
+        FileChooser chooser = new FileChooser();
+        chooser.setInitialFileName(LocalDateTime.now().toString() + ".pdf");
+        File file = chooser.showSaveDialog(print.getScene().getWindow());
+        if(file != null) {
+            Pdf<Purchase> pdf = new Pdf<>(purchases, file);
+            printing.visibleProperty().bind(pdf.runningProperty());
+            pdf.start();
+            pdf.setOnSucceeded(e -> {
+                showInfoDialog("Completed","Pdf File Created.");
+            });
+            pdf.setOnFailed(e -> {
+                showInfoDialog("Failed", "Failed to create Pdf File.");
+            });
+        }
+    }
+
     private void clear(){
         particular.setValue(null);
         qty.setText("0");
@@ -286,6 +312,12 @@ public class PurchaseController {
         }
     }
 
+    private void showInfoDialog(String title, String info){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(info);
+        alert.showAndWait();
+    }
 
 
 }

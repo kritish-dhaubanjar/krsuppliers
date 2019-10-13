@@ -12,6 +12,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <AnchorPane prefHeight="640.0" prefWidth="904.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="krsuppliers.purchases.PurchaseController">
     <children>
         <TableView fx:id="table" layoutX="1.0" layoutY="69.0" prefHeight="530.0" prefWidth="600.0">
@@ -88,6 +91,16 @@
                 <Button fx:id="save" layoutX="229.0" layoutY="320.0" mnemonicParsing="false" text="Save" />
                 <Button fx:id="cancel" layoutX="162.0" layoutY="320.0" mnemonicParsing="false" text="Cancel" />
                 <ChoiceBox fx:id="particular" layoutX="102.0" layoutY="138.0" prefHeight="25.0" prefWidth="175.0" />
+                <Button fx:id="print" layoutX="232.0" layoutY="24.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="27.0">
+                    <graphic>
+                        <ImageView fitHeight="34.0" fitWidth="23.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../../resources/icons/print.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <ProgressBar fx:id="printing" layoutX="26.0" layoutY="595.0" prefHeight="20.0" prefWidth="250.0"/>
             </children></Pane>
     </children>
 

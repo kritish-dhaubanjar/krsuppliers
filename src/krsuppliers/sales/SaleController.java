@@ -1,21 +1,25 @@
 package krsuppliers.sales;
 
-import com.mysql.cj.protocol.Resultset;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import krsuppliers.db.Database;
 import krsuppliers.models.Particular;
+import krsuppliers.models.Pdf;
+import krsuppliers.models.Purchase;
 import krsuppliers.models.Sale;
 
+import java.io.File;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,7 +27,7 @@ import java.util.Optional;
 
 public class SaleController {
     @FXML
-    Button save, cancel, filter;
+    Button save, cancel, filter, print;
     @FXML
     TextField rate, qty, discount;
     @FXML
@@ -32,6 +36,8 @@ public class SaleController {
     Text total;
     @FXML
     ChoiceBox<Particular> particular;
+    @FXML
+    ProgressBar printing;
     @FXML
     TableView<Sale>table;
     @FXML
@@ -42,13 +48,6 @@ public class SaleController {
     TableColumn<Sale, Date> _date;
 
     private int sales_id = 0;
-
-    enum actions{
-        SAVE,
-        UPDATE
-    }
-
-
     private ObservableList<Sale> sales = FXCollections.observableArrayList();
     private List<Particular> particulars = new ArrayList<>();
     private actions STATE = actions.SAVE;
@@ -59,6 +58,7 @@ public class SaleController {
         sales.clear();
         particular.getItems().clear();
         clear();
+        printing.setVisible(false);
 
         /*
         particular.setOnAction((e)->{
@@ -71,12 +71,12 @@ public class SaleController {
         filter.setOnAction(e-> filterRecords());
         save.setOnAction(e->saveSales());
         cancel.setOnAction(e->clear());
+        print.setOnAction(e->printPdf());
 
         from.setValue(LocalDate.now());
         to.setValue(LocalDate.now());
         getSales("SELECT * FROM sales WHERE cancel = 0 ORDER BY _id DESC LIMIT 20");
     }
-
 
     private void filterRecords(){
         LocalDate start = from.getValue();
@@ -226,6 +226,22 @@ public class SaleController {
         }
     }
 
+    private void printPdf(){
+        FileChooser chooser = new FileChooser();
+        chooser.setInitialFileName(LocalDateTime.now().toString() + ".pdf");
+        File file = chooser.showSaveDialog(print.getScene().getWindow());
+        if(file != null) {
+            Pdf<Sale> pdf = new Pdf<>(sales, file);
+            printing.visibleProperty().bind(pdf.runningProperty());
+            pdf.start();
+            pdf.setOnSucceeded(e -> {
+                showInfoDialog("Completed","Pdf File Created.");
+            });
+            pdf.setOnFailed(e -> {
+                showInfoDialog("Failed", "Failed to create Pdf File.");
+            });
+        }
+    }
 
     private void setTableViewBinding(){
         table.setItems(sales);
@@ -246,7 +262,9 @@ public class SaleController {
 
         table.setRowFactory((e)-> {
                 TableRow<Sale> row = new TableRow<>();
-                row.emptyProperty().addListener((observable, wasEmpty, isEmpty)->{row.setContextMenu(contextMenu);});
+                row.emptyProperty().addListener((observable, wasEmpty, isEmpty)->{
+                    row.setContextMenu(contextMenu);
+                });
                 return row;
         });
 
@@ -286,6 +304,18 @@ public class SaleController {
         }else{
             return false;
         }
+    }
+
+    private void showInfoDialog(String title, String info){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(info);
+        alert.showAndWait();
+    }
+
+    enum actions{
+        SAVE,
+        UPDATE
     }
 
 
