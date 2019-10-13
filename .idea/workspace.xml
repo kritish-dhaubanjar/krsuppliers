@@ -7,7 +7,34 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/itextpdf_5_5_13_1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/itextpdf_5_5_13_1.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/mysql_connector_java_8_0_11.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/krsuppliers.iml" beforeDir="false" afterPath="$PROJECT_DIR$/krsuppliers.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/itextpdf-5.5.13.1.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/krsuppliers/AuthController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/krsuppliers/auth.fxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/krsuppliers/main.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/krsuppliers/main.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/krsuppliers/purchases/purchases.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/krsuppliers/purchases/purchases.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/krsuppliers/resources/icons/database.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/krsuppliers/resources/icons/my_photo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/krsuppliers/resources/icons/particular.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/krsuppliers/resources/icons/print.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/krsuppliers/resources/icons/purchase.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/krsuppliers/resources/icons/sales.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/krsuppliers/resources/icons/theGimmickBox.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/krsuppliers/resources/icons/warehouse.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/krsuppliers/resources/mysql-connector-java-8.0.11/mysql-connector-java-8.0.11.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/krsuppliers/sales/sales.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/krsuppliers/sales/sales.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/resources/icons/database.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/resources/icons/my_photo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/resources/icons/particular.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/resources/icons/print.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/resources/icons/purchase.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/resources/icons/sales.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/resources/icons/theGimmickBox.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/resources/icons/warehouse.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/resources/mysql-connector-java-8.0.11/mysql-connector-java-8.0.11.jar" beforeDir="false" />
     </list>
     <ignored path="JavaFxApplication.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -75,7 +102,7 @@
       <usages-collector id="statistics.file.extensions.edit">
         <counts>
           <entry key="env" value="28" />
-          <entry key="fxml" value="582" />
+          <entry key="fxml" value="589" />
           <entry key="java" value="20727" />
         </counts>
       </usages-collector>
@@ -83,14 +110,14 @@
         <counts>
           <entry key="JAVA" value="20727" />
           <entry key="PLAIN_TEXT" value="28" />
-          <entry key="XML" value="582" />
+          <entry key="XML" value="589" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
         <counts>
           <entry key="class" value="2" />
           <entry key="env" value="2" />
-          <entry key="fxml" value="26" />
+          <entry key="fxml" value="29" />
           <entry key="iml" value="1" />
           <entry key="java" value="82" />
         </counts>
@@ -101,7 +128,7 @@
           <entry key="IDEA_MODULE" value="1" />
           <entry key="JAVA" value="82" />
           <entry key="PLAIN_TEXT" value="2" />
-          <entry key="XML" value="26" />
+          <entry key="XML" value="29" />
         </counts>
       </usages-collector>
     </session>
@@ -114,8 +141,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/krsuppliers/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="84">
-              <caret line="15" column="29" selection-start-line="15" selection-start-column="29" selection-end-line="15" selection-end-column="29" />
+            <state relative-caret-position="150">
+              <caret line="10" selection-start-line="10" selection-end-line="10" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -123,12 +150,32 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/krsuppliers/main.fxml">
           <provider editor-type-id="JavaFX-Scene-Builder" />
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-213">
-              <caret line="71" column="29" selection-start-line="71" selection-start-column="29" selection-end-line="71" selection-end-column="29" />
+            <state relative-caret-position="270">
+              <caret line="87" column="38" selection-start-line="87" selection-start-column="38" selection-end-line="87" selection-end-column="38" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/krsuppliers/purchases/purchases.fxml">
+          <provider editor-type-id="JavaFX-Scene-Builder" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="897">
+              <caret line="97" column="47" selection-start-line="97" selection-start-column="47" selection-end-line="97" selection-end-column="47" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/krsuppliers/particulars/particulars.fxml">
+          <provider editor-type-id="JavaFX-Scene-Builder" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="147">
+              <caret line="11" column="44" selection-start-line="11" selection-start-column="44" selection-end-line="11" selection-end-column="44" />
             </state>
           </provider>
         </entry>
@@ -146,10 +193,11 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="jar:///usr/lib/jvm/java-8-oracle/src.zip!/java/lang/Class.java">
+        <entry file="file://$PROJECT_DIR$/src/krsuppliers/sales/sales.fxml">
+          <provider editor-type-id="JavaFX-Scene-Builder" />
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="130">
-              <caret line="2215" column="24" selection-start-line="2215" selection-start-column="24" selection-end-line="2215" selection-end-column="24" />
+            <state relative-caret-position="87">
+              <caret line="97" column="42" selection-start-line="97" selection-start-column="42" selection-end-line="97" selection-end-column="42" />
             </state>
           </provider>
         </entry>
@@ -211,17 +259,17 @@
         <option value="$PROJECT_DIR$/src/krsuppliers/db/Database.java" />
         <option value="$PROJECT_DIR$/src/krsuppliers/db/Configuration.java" />
         <option value="$PROJECT_DIR$/src/krsuppliers/accounts/AccountsController.java" />
-        <option value="$PROJECT_DIR$/src/krsuppliers/sales/sales.fxml" />
         <option value="$PROJECT_DIR$/src/krsuppliers/models/Transaction.java" />
         <option value="$PROJECT_DIR$/src/krsuppliers/models/Sale.java" />
         <option value="$PROJECT_DIR$/src/krsuppliers/models/Purchase.java" />
-        <option value="$PROJECT_DIR$/src/krsuppliers/purchases/purchases.fxml" />
         <option value="$PROJECT_DIR$/src/krsuppliers/models/Pdf.java" />
         <option value="$PROJECT_DIR$/src/krsuppliers/purchases/PurchaseController.java" />
         <option value="$PROJECT_DIR$/src/krsuppliers/sales/SaleController.java" />
         <option value="$PROJECT_DIR$/src/krsuppliers/Controller.java" />
         <option value="$PROJECT_DIR$/src/krsuppliers/Main.java" />
+        <option value="$PROJECT_DIR$/src/krsuppliers/sales/sales.fxml" />
         <option value="$PROJECT_DIR$/src/krsuppliers/main.fxml" />
+        <option value="$PROJECT_DIR$/src/krsuppliers/purchases/purchases.fxml" />
       </list>
     </option>
   </component>
@@ -259,33 +307,6 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="krsuppliers" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="krsuppliers" type="b2602c69:ProjectViewProjectNode" />
-              <item name="krsuppliers" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="krsuppliers" type="462c0819:PsiDirectoryNode" />
-              <item name="models" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="krsuppliers" type="b2602c69:ProjectViewProjectNode" />
-              <item name="krsuppliers" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="krsuppliers" type="462c0819:PsiDirectoryNode" />
-              <item name="purchases" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="krsuppliers" type="b2602c69:ProjectViewProjectNode" />
-              <item name="krsuppliers" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="krsuppliers" type="462c0819:PsiDirectoryNode" />
-              <item name="sales" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="krsuppliers" type="b2602c69:ProjectViewProjectNode" />
-              <item name="krsuppliers" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="resources" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -303,10 +324,10 @@
     <property name="MemberChooser.sorted" value="false" />
     <property name="OverrideImplement.combined" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1570988120450" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1570989022786" />
     <property name="dynamic.classpath" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/itextpdf-5.5.13.1.jar!/" />
-    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/src/krsuppliers/resources/mysql-connector-java-8.0.11.jar!/" />
+    <property name="project.structure.last.edited" value="Libraries" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="recentsLimit" value="5" />
@@ -459,7 +480,7 @@
     <frame x="0" y="30" width="1366" height="738" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.16540785" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.16540785" />
       <window_info id="Structure" order="1" weight="0.25" />
       <window_info id="Favorites" order="2" />
       <window_info id="Designer" order="3" />
@@ -468,7 +489,7 @@
       <window_info id="Capture Tool" order="6" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32847896" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32847896" />
+      <window_info anchor="bottom" id="Run" order="2" visible="true" weight="0.32847896" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39967638" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -577,14 +598,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="375">
           <caret line="25" selection-start-line="25" selection-end-line="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/krsuppliers/particulars/particulars.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="315">
-          <caret line="21" column="72" selection-start-line="21" selection-start-column="72" selection-end-line="21" selection-end-column="72" />
         </state>
       </provider>
     </entry>
@@ -724,22 +737,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/krsuppliers/sales/sales.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="900">
-          <caret line="101" column="21" lean-forward="true" selection-start-line="93" selection-start-column="12" selection-end-line="101" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/krsuppliers/purchases/purchases.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder" />
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="237">
-          <caret line="97" column="33" selection-start-line="97" selection-start-column="33" selection-end-line="97" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/krsuppliers/models/Pdf.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="294">
@@ -778,19 +775,43 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/krsuppliers/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="84">
-          <caret line="15" column="29" selection-start-line="15" selection-start-column="29" selection-end-line="15" selection-end-column="29" />
+        <state relative-caret-position="150">
+          <caret line="10" selection-start-line="10" selection-end-line="10" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/krsuppliers/sales/sales.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="87">
+          <caret line="97" column="42" selection-start-line="97" selection-start-column="42" selection-end-line="97" selection-end-column="42" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/krsuppliers/main.fxml">
       <provider editor-type-id="JavaFX-Scene-Builder" />
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-213">
-          <caret line="71" column="29" selection-start-line="71" selection-start-column="29" selection-end-line="71" selection-end-column="29" />
+        <state relative-caret-position="270">
+          <caret line="87" column="38" selection-start-line="87" selection-start-column="38" selection-end-line="87" selection-end-column="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/krsuppliers/purchases/purchases.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="897">
+          <caret line="97" column="47" selection-start-line="97" selection-start-column="47" selection-end-line="97" selection-end-column="47" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/krsuppliers/particulars/particulars.fxml">
+      <provider editor-type-id="JavaFX-Scene-Builder" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="11" column="44" selection-start-line="11" selection-start-column="44" selection-end-line="11" selection-end-column="44" />
         </state>
       </provider>
     </entry>
@@ -861,7 +882,7 @@
       </state>
       <state key="ProjectLibrariesConfigurable.UI">
         <settings>
-          <last-edited>itextpdf-5.5.13.1</last-edited>
+          <last-edited>mysql-connector-java-8.0.11</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

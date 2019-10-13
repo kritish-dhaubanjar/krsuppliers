@@ -17,7 +17,7 @@
                <children>
                   <ImageView fitHeight="50.0" fitWidth="53.0" layoutX="35.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../resources/icons/sales.png" />
+                        <Image url="@./resources/icons/sales.png" />
                      </image>
                   </ImageView>
                   <Label alignment="CENTER" layoutX="42.0" layoutY="77.0" text="Sales" textFill="WHITE">
@@ -34,7 +34,7 @@
                <children>
                   <ImageView fitHeight="50.0" fitWidth="53.0" layoutX="35.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../resources/icons/purchase.png" />
+                        <Image url="@./resources/icons/purchase.png" />
                      </image>
                   </ImageView>
                   <Label alignment="CENTER" layoutX="28.0" layoutY="77.0" text="Purchase" textFill="WHITE">
@@ -51,7 +51,7 @@
                <children>
                   <ImageView fitHeight="50.0" fitWidth="53.0" layoutX="35.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../resources/icons/warehouse.png" />
+                        <Image url="@./resources/icons/warehouse.png" />
                      </image>
                   </ImageView>
                   <Label alignment="CENTER" layoutX="37.0" layoutY="77.0" text="Stocks" textFill="WHITE">
@@ -68,7 +68,7 @@
                <children>
                   <ImageView fitHeight="50.0" fitWidth="53.0" layoutX="35.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../resources/icons/particular.png" />
+                        <Image url="@./resources/icons/particular.png" />
                      </image>
                   </ImageView>
                   <Label alignment="CENTER" layoutX="25.0" layoutY="77.0" text="Particulars" textFill="WHITE">
@@ -85,7 +85,7 @@
                <children>
                   <ImageView fitHeight="50.0" fitWidth="53.0" layoutX="35.0" layoutY="25.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../resources/icons/database.png" />
+                        <Image url="@./resources/icons/database.png" />
                      </image>
                   </ImageView>
                   <Label alignment="CENTER" layoutX="31.0" layoutY="77.0" text="Account" textFill="WHITE">
