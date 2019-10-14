@@ -1,5 +1,7 @@
 package krsuppliers.accounts;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
@@ -17,9 +19,9 @@ public class AccountsController {
     @FXML
     TextField database, user, password, host, port, newDatabase;
     @FXML
-    CheckBox confirm;
+    JFXCheckBox confirm;
     @FXML
-    Button save, create;
+    JFXButton save, create;
     @FXML
     Text confirm_msg;
 

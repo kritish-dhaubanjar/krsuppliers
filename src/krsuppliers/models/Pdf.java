@@ -16,12 +16,14 @@ import java.util.stream.Stream;
 public class Pdf<T extends Transaction> extends Service<Boolean> {
 
     private ObservableList<T> list;
+    private String total;
     private Font font = FontFactory.getFont(FontFactory.HELVETICA, 8, BaseColor.BLACK);
     private File file;
 
-    public Pdf(ObservableList<T> list, File file){
+    public Pdf(ObservableList<T> list, String total, File file){
         this.list = list;
         this.file = file;
+        this.total = total;
     }
 
     @Override
@@ -34,12 +36,21 @@ public class Pdf<T extends Transaction> extends Service<Boolean> {
                 PdfWriter.getInstance(document, fstream);
                 document.open();
                 document.setPageSize(new Rectangle(210, 297));
-                document.add(new Chunk(LocalDateTime.now().toString(), font));
+
+                Paragraph _date = new Paragraph(new Chunk(LocalDateTime.now().toString(), font));
+                _date.setAlignment(Paragraph.ALIGN_CENTER);
+                document.add(_date);
+
                 PdfPTable table = new PdfPTable(8);
-                table.setWidths(new int[]{2,2,1,4,1,2,2,2});
+                table.setWidths(new float[]{(float)1.5,2,1,4,1,2,2,2});
                 addTableHeader(table);
                 addTableRows(table);
+
                 document.add(table);
+                Paragraph _total = new Paragraph(new Chunk("Total : Rs " + total, font ));
+                _total.setAlignment(Paragraph.ALIGN_RIGHT);
+                document.add(_total);
+
                 document.close();
                 return true;
             }

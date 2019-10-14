@@ -1,16 +1,19 @@
 package krsuppliers.sales;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXSpinner;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import krsuppliers.db.Database;
 import krsuppliers.models.Particular;
 import krsuppliers.models.Pdf;
-import krsuppliers.models.Purchase;
 import krsuppliers.models.Sale;
 
 import java.io.File;
@@ -20,14 +23,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class SaleController {
     @FXML
-    Button save, cancel, filter, print;
+    JFXButton save, cancel, filter, print;
     @FXML
     TextField rate, qty, discount;
     @FXML
@@ -35,9 +35,9 @@ public class SaleController {
     @FXML
     Text total;
     @FXML
-    ChoiceBox<Particular> particular;
+    JFXSpinner busy, printing;
     @FXML
-    ProgressBar printing;
+    ComboBox<Particular> particular;
     @FXML
     TableView<Sale>table;
     @FXML
@@ -59,7 +59,7 @@ public class SaleController {
         particular.getItems().clear();
         clear();
         printing.setVisible(false);
-
+        busy.setVisible(false);
         /*
         particular.setOnAction((e)->{
             System.out.println(particular.getSelectionModel().getSelectedItem());
@@ -73,9 +73,20 @@ public class SaleController {
         cancel.setOnAction(e->clear());
         print.setOnAction(e->printPdf());
 
+        particular.setOnKeyReleased(e->{
+            for(Particular p: particulars){
+                if(p.getParticular().toLowerCase().startsWith(e.getText())){
+                    particular.getSelectionModel().select(p);
+                    break;
+                }
+            }
+        });
+
         from.setValue(LocalDate.now());
         to.setValue(LocalDate.now());
+
         getSales("SELECT * FROM sales WHERE cancel = 0 ORDER BY _id DESC LIMIT 20");
+
     }
 
     private void filterRecords(){
@@ -103,32 +114,40 @@ public class SaleController {
         }
     }
 
-    private void getSales(String queryString){
-        try {
-            Statement query = Database.getConnection().createStatement();
-            ResultSet resultSet = query.executeQuery(queryString);
-            sales.clear();
-            int _total = 0;
-            while (resultSet.next()){
-                sales.add(new Sale(resultSet.getInt("_id"),
-                        resultSet.getDate("date"),
-                        resultSet.getInt("particular_id"),
-                        resultSet.getString("particular"),
-                        resultSet.getInt("qty"),
-                        resultSet.getInt("rate"),
-                        resultSet.getInt("discount"),
-                        resultSet.getInt("amount")));
-                _total += resultSet.getInt("amount");
-            }
+    private void getSales(String queryString) {
+        Task task = new Task<Void>() {
+            @Override
+            protected Void call() throws Exception {
+                try {
+                    Statement query = Database.getConnection().createStatement();
+                    ResultSet resultSet = query.executeQuery(queryString);
+                    sales.clear();
+                    int _total = 0;
+                    while (resultSet.next()) {
+                        sales.add(new Sale(resultSet.getInt("_id"),
+                                resultSet.getDate("date"),
+                                resultSet.getInt("particular_id"),
+                                resultSet.getString("particular"),
+                                resultSet.getInt("qty"),
+                                resultSet.getInt("rate"),
+                                resultSet.getInt("discount"),
+                                resultSet.getInt("amount")));
+                        _total += resultSet.getInt("amount");
+                    }
 
-            total.setText(String.valueOf(_total));
-        }catch (SQLException e){
-            showErrorDialog(e.getMessage());
-        }
+                    total.setText(String.valueOf(_total));
+                } catch (SQLException e) {
+                    showErrorDialog(e.getMessage());
+                }
+                return null;
+            }
+        };
+
+        busy.visibleProperty().bind(task.runningProperty());
+        new Thread(task).start();
     }
 
     private void deleteSales(Sale sale){
-        if(showAlertDialog("#" + sale.get_id() + " will be deleted!"))
         try {
             Statement query = Database.getConnection().createStatement();
             int num = query.executeUpdate("DELETE FROM sales WHERE _id = " + sale.get_id());
@@ -143,6 +162,7 @@ public class SaleController {
         }catch (SQLException e){
             showErrorDialog(e.getMessage());
         }
+
     }
 
     private void cancelSales(Sale sale){
@@ -231,7 +251,7 @@ public class SaleController {
         chooser.setInitialFileName(LocalDateTime.now().toString() + ".pdf");
         File file = chooser.showSaveDialog(print.getScene().getWindow());
         if(file != null) {
-            Pdf<Sale> pdf = new Pdf<>(sales, file);
+            Pdf<Sale> pdf = new Pdf<>(sales, total.getText(), file);
             printing.visibleProperty().bind(pdf.runningProperty());
             pdf.start();
             pdf.setOnSucceeded(e -> {

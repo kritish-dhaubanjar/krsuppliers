@@ -1,7 +1,5 @@
 package krsuppliers.db;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,7 +13,7 @@ public class Database {
     private Database(){
         try{
             Map<String, String> configuration = Configuration.getConfiguration().getConfig();
-            String connectionString = "jdbc:mysql://" + configuration.get("host") + ":" + configuration.get("port") + "/" + configuration.get("database") + "?useTimezone=true&serverTimezone=UTC";
+            String connectionString = "jdbc:mysql://" + configuration.get("host") + ":" + configuration.get("port") + "/" + configuration.get("database");
             connection = DriverManager.getConnection(connectionString,configuration.get("username"),configuration.get("password"));
         }catch (SQLException | IOException e){
             System.out.println(e.getMessage());

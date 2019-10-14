@@ -1,5 +1,6 @@
 package krsuppliers.particulars;
 
+import com.jfoenix.controls.JFXButton;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -20,7 +21,7 @@ public class ParticularsController {
     @FXML
     TableColumn<Particular, String> _particular;
     @FXML
-    Button save, cancel;
+    JFXButton save, cancel;
     @FXML
     TextField name;
 

@@ -9,9 +9,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane minHeight="640.0" minWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.201" xmlns:fx="http://javafx.com/fxml/1" fx:controller="krsuppliers.Controller">
+<AnchorPane minHeight="640.0" minWidth="1024.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="krsuppliers.Controller">
    <children>
-      <VBox prefHeight="640.0" prefWidth="120.0" style="-fx-background-color: #3e3e3e;">
+      <VBox prefHeight="640.0" prefWidth="120.0" style="-fx-background-color: #3e3e3e;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <Pane fx:id="sales" prefHeight="120.0" prefWidth="200.0" style="-fx-background-color: #2e2e2e;">
                <children>
@@ -100,7 +100,7 @@
             </Pane>
          </children>
       </VBox>
-      <AnchorPane fx:id="pane" layoutX="120.0" prefHeight="640.0" prefWidth="904.0" style="-fx-background-color: #fff;">
+      <AnchorPane fx:id="pane" layoutX="120.0" prefHeight="640.0" prefWidth="904.0" style="-fx-background-color: #fff;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
 
       </AnchorPane>
    </children>

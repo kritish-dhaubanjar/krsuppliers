@@ -1,8 +1,9 @@
 package krsuppliers.stocks;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXCheckBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -36,9 +37,9 @@ public class StockController {
     @FXML
     ComboBox<Particular> particular;
     @FXML
-    Button cancel, filter;
+    JFXButton cancel, filter;
     @FXML
-    CheckBox _sales, _purchase;
+    JFXCheckBox _sales, _purchase;
 
     private static ObservableList<Particular> particulars = FXCollections.observableArrayList();
     private static ObservableList<Stock> sales = FXCollections.observableArrayList();
@@ -56,6 +57,15 @@ public class StockController {
         sales.clear();
         clear();
         setParticulars();
+
+        particular.setOnKeyReleased(e->{
+            for(Particular p: particulars){
+                if(p.getParticular().toLowerCase().startsWith(e.getText())){
+                    particular.getSelectionModel().select(p);
+                    break;
+                }
+            }
+        });
 
         cancel.setOnAction(e->clear());
         filter.setOnAction(e->filter());

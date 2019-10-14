@@ -1,7 +1,10 @@
 package krsuppliers.purchases;
 
+import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXSpinner;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -26,7 +29,7 @@ import java.util.Optional;
 
 public class PurchaseController {
     @FXML
-    Button save, cancel, filter, print;
+    JFXButton save, cancel, filter, print;
     @FXML
     TextField rate, qty, discount;
     @FXML
@@ -34,9 +37,9 @@ public class PurchaseController {
     @FXML
     Text total;
     @FXML
-    ProgressBar printing;
+    JFXSpinner printing, busy;
     @FXML
-    ChoiceBox<Particular> particular;
+    ComboBox<Particular> particular;
     @FXML
     TableView<Purchase>table;
     @FXML
@@ -65,6 +68,7 @@ public class PurchaseController {
         particular.getItems().clear();
         clear();
         printing.setVisible(false);
+        busy.setVisible(false);
 
         /*
         particular.setOnAction((e)->{
@@ -78,6 +82,15 @@ public class PurchaseController {
         save.setOnAction(e->savePurchases());
         cancel.setOnAction(e->clear());
         print.setOnAction(e->printPdf());
+
+        particular.setOnKeyReleased(e->{
+            for(Particular p: particulars){
+                if(p.getParticular().toLowerCase().startsWith(e.getText())){
+                    particular.getSelectionModel().select(p);
+                    break;
+                }
+            }
+        });
 
         from.setValue(LocalDate.now());
         to.setValue(LocalDate.now());
@@ -111,27 +124,36 @@ public class PurchaseController {
     }
 
     private void getPurchases(String queryString){
-        try {
-            Statement query = Database.getConnection().createStatement();
-            ResultSet resultSet = query.executeQuery(queryString);
-            purchases.clear();
-            int _total = 0;
-            while (resultSet.next()){
-                purchases.add(new Purchase(resultSet.getInt("_id"),
-                        resultSet.getDate("date"),
-                        resultSet.getInt("particular_id"),
-                        resultSet.getString("particular"),
-                        resultSet.getInt("qty"),
-                        resultSet.getInt("rate"),
-                        resultSet.getInt("discount"),
-                        resultSet.getInt("amount")));
-                _total += resultSet.getInt("amount");
-            }
+        Task task = new Task<Void>() {
+            @Override
+                    protected Void call() throws Exception {
+                try {
+                    Statement query = Database.getConnection().createStatement();
+                    ResultSet resultSet = query.executeQuery(queryString);
+                    purchases.clear();
+                    int _total = 0;
+                    while (resultSet.next()){
+                        purchases.add(new Purchase(resultSet.getInt("_id"),
+                                resultSet.getDate("date"),
+                                resultSet.getInt("particular_id"),
+                                resultSet.getString("particular"),
+                                resultSet.getInt("qty"),
+                                resultSet.getInt("rate"),
+                                resultSet.getInt("discount"),
+                                resultSet.getInt("amount")));
+                        _total += resultSet.getInt("amount");
+                    }
 
-            total.setText(String.valueOf(_total));
-        }catch (SQLException e){
-            showErrorDialog(e.getMessage());
-        }
+                    total.setText(String.valueOf(_total));
+                }catch (SQLException e){
+                    showErrorDialog(e.getMessage());
+                }
+                return null;
+            }
+        };
+
+        busy.visibleProperty().bind(task.runningProperty());
+        new Thread(task).start();
     }
 
     private void deletePurchases(Purchase sale){
@@ -272,7 +294,7 @@ public class PurchaseController {
         chooser.setInitialFileName(LocalDateTime.now().toString() + ".pdf");
         File file = chooser.showSaveDialog(print.getScene().getWindow());
         if(file != null) {
-            Pdf<Purchase> pdf = new Pdf<>(purchases, file);
+            Pdf<Purchase> pdf = new Pdf<>(purchases, total.getText(), file);
             printing.visibleProperty().bind(pdf.runningProperty());
             pdf.start();
             pdf.setOnSucceeded(e -> {

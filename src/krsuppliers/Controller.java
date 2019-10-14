@@ -25,6 +25,7 @@ public class Controller {
 
     @FXML
     public void initialize(){
+
         URL initUrl = getClass().getResource("sales/sales.fxml");
         loadFxml(initUrl);
 
