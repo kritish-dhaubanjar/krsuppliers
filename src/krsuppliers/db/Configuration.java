@@ -54,7 +54,6 @@ public class Configuration {
                 config.put("port", port);
                 ostream.write(init.getBytes());
                 ostream.close();
-                System.out.println(config.values());
                 Database.resetConnection();
                 return true;
             }
