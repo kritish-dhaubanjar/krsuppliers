@@ -78,8 +78,8 @@ public class AccountsController {
                 if(num == 1){
                     statement.executeUpdate("USE " + newDatabase.getText().trim());
                     statement.execute("CREATE TABLE particulars (_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, particular TEXT NOT NULL)");
-                    statement.execute("CREATE TABLE purchases(_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, date DATE NOT NULL, particular_id INTEGER NOT NULL, particular TEXT NOT NULL, qty INTEGER NOT NULL, rate INTEGER NOT NULL, discount INTEGER NOT NULL, amount INTEGER NOT NULL, cancel TINYINT NOT NULL DEFAULT 0)");
-                    statement.execute("CREATE TABLE sales(_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, date DATE NOT NULL, particular_id INTEGER NOT NULL, particular TEXT NOT NULL, qty INTEGER NOT NULL, rate INTEGER NOT NULL, discount INTEGER NOT NULL, amount INTEGER NOT NULL, cancel TINYINT NOT NULL DEFAULT 0)");
+                    statement.execute("CREATE TABLE purchases(_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, date DATE NOT NULL, particular_id INTEGER NOT NULL, particular TEXT NOT NULL, qty INTEGER NOT NULL, rate FLOAT NOT NULL, selling_rate FLOAT NOT NULL, discount FLOAT NOT NULL, amount FLOAT NOT NULL, cancel TINYINT NOT NULL DEFAULT 0)");
+                    statement.execute("CREATE TABLE sales(_id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT, date DATE NOT NULL, particular_id INTEGER NOT NULL, particular TEXT NOT NULL, qty INTEGER NOT NULL, rate FLOAT NOT NULL, discount FLOAT NOT NULL, amount FLOAT NOT NULL, cancel TINYINT NOT NULL DEFAULT 0)");
                     showAlertDialog("Database created successfully!");
                 }else{
                     showErrorDialog("Can't create database!");

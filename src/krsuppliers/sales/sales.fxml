@@ -15,9 +15,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="640.0" prefWidth="904.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="krsuppliers.sales.SaleController">
+<AnchorPane prefHeight="640.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="krsuppliers.sales.SaleController">
     <children>
-        <TableView fx:id="table" layoutX="1.0" layoutY="69.0" prefHeight="530.0" prefWidth="600.0">
+        <TableView fx:id="table" layoutX="1.0" layoutY="69.0" prefHeight="530.0" prefWidth="655.0">
             <columns>
                 <TableColumn fx:id="_sale_id" prefWidth="50.0" text="#" />
                 <TableColumn fx:id="_date" prefWidth="100.0" text="Date" />
@@ -41,17 +41,22 @@
                 <Font name="System Bold" size="14.0" />
             </font>
         </Label>
-        <Label layoutX="322.0" layoutY="609.0" text="Total:">
+        <JFXButton fx:id="filter" buttonType="RAISED" layoutX="516.0" layoutY="26.0" style="-fx-background-color: #5858AB;" text="FILTER" textFill="WHITE">
+            <font>
+                <Font name="System Bold" size="14.0" />
+            </font>
+        </JFXButton>
+        <Label layoutX="480.0" layoutY="609.0" text="Total:">
             <font>
                 <Font name="System Bold" size="14.0" />
             </font>
         </Label>
-        <Text fx:id="total" layoutX="427.0" layoutY="622.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0.00">
+        <Text fx:id="total" layoutX="585.0" layoutY="622.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0.00">
             <font>
                 <Font size="14.0" />
             </font>
         </Text>
-        <Pane layoutX="603.0" prefHeight="640.0" prefWidth="300.0" style="-fx-background-color: #f3f3f3f3;">
+        <Pane layoutX="660.0" prefHeight="640.0" prefWidth="300.0" style="-fx-background-color: #f3f3f3f3;">
             <children>
             <JFXButton fx:id="print" layoutX="198.0" layoutY="24.0" mnemonicParsing="false" prefHeight="33.0" prefWidth="90.0" style="-fx-background-color: #fff;" text="PRINT">
                <graphic>
@@ -81,6 +86,7 @@
                         <Font name="System Bold" size="14.0" />
                     </font>
                 </Label>
+                <ComboBox fx:id="particular" layoutX="102.0" layoutY="138.0" prefHeight="25.0" prefWidth="175.0" />
                 <Label layoutX="26.0" layoutY="187.0" text="Qty">
                     <font>
                         <Font name="System Bold" size="14.0" />
@@ -99,7 +105,6 @@
                     </font>
                 </Label>
                 <TextField fx:id="discount" layoutX="102.0" layoutY="267.0" prefHeight="25.0" prefWidth="175.0" />
-                <ComboBox fx:id="particular" layoutX="102.0" layoutY="138.0" prefHeight="25.0" prefWidth="175.0" />
             <JFXButton fx:id="save" buttonType="RAISED" layoutX="217.0" layoutY="320.0" style="-fx-background-color: #00BC58;" text="SAVE" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="14.0" />
@@ -112,12 +117,7 @@
             </JFXButton>
             <JFXSpinner fx:id="printing" layoutX="164.0" layoutY="28.0" prefHeight="26.0" prefWidth="23.0" />
             </children></Pane>
-      <JFXButton fx:id="filter" buttonType="RAISED" layoutX="516.0" layoutY="26.0" style="-fx-background-color: #5858AB;" text="FILTER" textFill="WHITE">
-         <font>
-            <Font name="System Bold" size="14.0" />
-         </font>
-      </JFXButton>
-      <JFXSpinner fx:id="busy" layoutX="274.0" layoutY="283.0" />
+      <JFXSpinner fx:id="busy" layoutX="301.0" layoutY="283.0" />
     </children>
 
 </AnchorPane>

@@ -2,20 +2,26 @@ package krsuppliers.stocks;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXCheckBox;
+import com.jfoenix.controls.JFXSpinner;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import krsuppliers.db.Database;
-import krsuppliers.models.Particular;
-import krsuppliers.models.Stock;
+import krsuppliers.models.*;
+import krsuppliers.pdf.Pdf;
+import krsuppliers.pdf.PdfStock;
 
+import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
 
@@ -23,7 +29,9 @@ public class StockController {
     @FXML
     TableView<Stock> table;
     @FXML
-    TableColumn<Stock, Integer> _id, _qty, _rate, _particular_id;
+    TableColumn<Stock, Integer> _id, _qty, _particular_id;
+    @FXML
+    TableColumn<Stock, Float>  _rate, _discount, _amount, _balance;
     @FXML
     TableColumn<Stock, String> _particular;
     @FXML
@@ -33,28 +41,25 @@ public class StockController {
     @FXML
     TextField pid;
     @FXML
-    Text total;
-    @FXML
     ComboBox<Particular> particular;
     @FXML
-    JFXButton cancel, filter;
+    JFXButton cancel, filter, print;
     @FXML
     JFXCheckBox _sales, _purchase;
+    @FXML
+    JFXSpinner busy, printing;
 
     private static ObservableList<Particular> particulars = FXCollections.observableArrayList();
-    private static ObservableList<Stock> sales = FXCollections.observableArrayList();
-    private static ObservableList<Stock> purchases = FXCollections.observableArrayList();
+    private static ObservableList<Transaction> transactions =  FXCollections.observableArrayList();
     private static ObservableList<Stock> stocks = FXCollections.observableArrayList();
 
-    private int balance_qty = 0;
 
     @FXML
     public void initialize(){
         setTableViewBinding();
         particulars.clear();
         stocks.clear();
-        purchases.clear();
-        sales.clear();
+        transactions.clear();
         clear();
         setParticulars();
 
@@ -69,7 +74,10 @@ public class StockController {
 
         cancel.setOnAction(e->clear());
         filter.setOnAction(e->filter());
+        print.setOnAction(e->printPdf());
 
+        busy.setVisible(false);
+        printing.setVisible(false);
         from.setValue(LocalDate.now());
         to.setValue(LocalDate.now());
     }
@@ -92,10 +100,8 @@ public class StockController {
     }
 
     private void filter(){
-        balance_qty = 0;
         stocks.clear();
-        purchases.clear();
-        sales.clear();
+        transactions.clear();
         LocalDate start = from.getValue();
         LocalDate end = to.getValue();
         if(start!=null && end!=null && !start.isAfter(end) && (particular.getValue() != null || !pid.getText().isEmpty() )){
@@ -107,58 +113,99 @@ public class StockController {
             }
 
             if (_sales.isSelected() && _purchase.isSelected()){
-                getSales("SELECT * FROM sales WHERE particular_id = "+ _pid +" AND date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0");
-                getPurchases("SELECT * FROM purchases WHERE particular_id = "+ _pid +" AND date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0");
-                stocks.addAll(sales);
-                stocks.addAll(purchases);
-                Collections.sort(stocks);
+                getTransactions("SELECT * FROM sales WHERE particular_id = "+ _pid +" AND date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0 ORDER BY DATE ASC", "SELECT * FROM purchases WHERE particular_id = "+ _pid +" AND date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0  ORDER BY DATE ASC");
             }else if(_sales.isSelected() && !_purchase.isSelected()){
-                getSales("SELECT * FROM sales WHERE particular_id = "+ _pid +" AND date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0");
-                stocks.addAll(sales);
+                getTransactions("SELECT * FROM sales WHERE particular_id = "+ _pid +" AND date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0 ORDER BY DATE ASC", "");
             }else if(!_sales.isSelected() && _purchase.isSelected()){
-                getPurchases("SELECT * FROM purchases WHERE particular_id = "+ _pid +" AND date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0");
-                stocks.addAll(purchases);
+                getTransactions("","SELECT * FROM purchases WHERE particular_id = "+ _pid +" AND date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0 ORDER BY DATE ASC");
             }
-            total.setText(String.valueOf(balance_qty));
-            balance_qty = 0;
         }
     }
 
-    private void getPurchases(String queryString){
-        try {
-            Statement query = Database.getConnection().createStatement();
-            ResultSet resultSet = query.executeQuery(queryString);
-            purchases.clear();
-            while (resultSet.next()){
-                purchases.add(new Stock(resultSet.getInt("_id"),
-                        resultSet.getDate("date"),
-                        resultSet.getInt("particular_id"),
-                        resultSet.getString("particular"),
-                        resultSet.getInt("qty"),
-                        resultSet.getInt("rate")));
-                balance_qty += resultSet.getInt("qty");
+    private void getTransactions(String salesQuery, String purchaseQuery){
+
+        Task<ObservableList<Stock>> task = new Task<ObservableList<Stock>>() {
+            @Override
+            protected ObservableList<Stock> call() throws Exception {
+                transactions.clear();
+                try {
+                    if(!purchaseQuery.isEmpty()) {
+                        Statement query = Database.getConnection().createStatement();
+                        ResultSet resultSet = query.executeQuery(purchaseQuery);
+                        while (resultSet.next()) {
+                            Purchase purchase = new Purchase(resultSet.getInt("_id"),
+                                    resultSet.getDate("date"),
+                                    resultSet.getInt("particular_id"),
+                                    resultSet.getString("particular"),
+                                    resultSet.getInt("qty"),
+                                    resultSet.getFloat("rate"),
+                                    resultSet.getFloat("selling_rate"),
+                                    resultSet.getFloat("discount"),
+                                    resultSet.getFloat("amount"));
+                            transactions.add(purchase);
+                        }
+                    }
+                    if(!salesQuery.isEmpty()) {
+                        Statement query = Database.getConnection().createStatement();
+                        ResultSet resultSet = query.executeQuery(salesQuery);
+                        while (resultSet.next()) {
+                            Sale sale = new Sale(resultSet.getInt("_id"),
+                                    resultSet.getDate("date"),
+                                    resultSet.getInt("particular_id"),
+                                    resultSet.getString("particular"),
+                                    0 - resultSet.getInt("qty"),
+                                    resultSet.getFloat("rate"),
+                                    resultSet.getFloat("discount"),
+                                    resultSet.getFloat("amount"));
+                            transactions.add(sale);
+                        }
+                    }
+                } catch (SQLException e) {
+                    showErrorDialog(e.getMessage());
+                }
+
+                Collections.sort(transactions);
+
+                int balance = 0;
+
+                for(Transaction transaction: transactions){
+                    Stock stock = new Stock(transaction.get_id(),
+                            transaction.getDate(),
+                            transaction.getParticular_id(),
+                            transaction.getParticular(),
+                            transaction.getQty(),
+                            transaction.getRate(),
+                            transaction.getDiscount(),
+                            transaction.getAmount());
+
+                    balance += transaction.getQty();
+                    stock.setBalance(balance);
+                    stocks.add(stock);
+                }
+                return stocks;
             }
-        }catch (SQLException e){
-            showErrorDialog(e.getMessage());
-        }
+        };
+
+        busy.visibleProperty().bind(task.runningProperty());
+        table.itemsProperty().bind(task.valueProperty());
+
+        new Thread(task).start();
     }
 
-    private void getSales(String queryString){
-        try {
-            Statement query = Database.getConnection().createStatement();
-            ResultSet resultSet = query.executeQuery(queryString);
-            sales.clear();
-            while (resultSet.next()){
-                sales.add(new Stock(resultSet.getInt("_id"),
-                        resultSet.getDate("date"),
-                        resultSet.getInt("particular_id"),
-                        resultSet.getString("particular"),
-                        0-resultSet.getInt("qty"),
-                        resultSet.getInt("rate")));
-                balance_qty -= resultSet.getInt("qty");
-            }
-        }catch (SQLException e){
-            showErrorDialog(e.getMessage());
+    private void printPdf(){
+        FileChooser chooser = new FileChooser();
+        chooser.setInitialFileName(LocalDateTime.now().toString() + ".pdf");
+        File file = chooser.showSaveDialog(print.getScene().getWindow());
+        if(file != null) {
+            PdfStock pdf = new PdfStock(stocks, file);
+            printing.visibleProperty().bind(pdf.runningProperty());
+            pdf.start();
+            pdf.setOnSucceeded(e -> {
+                showInfoDialog("Completed","Pdf File Created.");
+            });
+            pdf.setOnFailed(e -> {
+                showInfoDialog("Failed", "Failed to create Pdf File.");
+            });
         }
     }
 
@@ -169,6 +216,9 @@ public class StockController {
         _particular.setCellValueFactory(new PropertyValueFactory<>("particular"));
         _particular_id.setCellValueFactory(new PropertyValueFactory<>("particular_id"));
         _rate.setCellValueFactory(new PropertyValueFactory<>("rate"));
+        _discount.setCellValueFactory(new PropertyValueFactory<>("discount"));
+        _amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
+        _balance.setCellValueFactory(new PropertyValueFactory<>("balance"));
         _date.setCellValueFactory(new PropertyValueFactory<>("date"));
     }
 
@@ -178,13 +228,19 @@ public class StockController {
         _purchase.setSelected(true);
         pid.setText("0");
         particular.setValue(null);
-        balance_qty = 0;
     }
 
     private void showErrorDialog(String error){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Oops! Something went wrong!");
         alert.setHeaderText(error);
+        alert.showAndWait();
+    }
+
+    private void showInfoDialog(String title, String info){
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(info);
         alert.showAndWait();
     }
 

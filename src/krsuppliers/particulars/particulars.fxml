@@ -9,15 +9,15 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefWidth="904.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="krsuppliers.particulars.ParticularsController">
+<AnchorPane prefWidth="960.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="krsuppliers.particulars.ParticularsController">
     <children>
-        <TableView fx:id="table" prefHeight="640.0" prefWidth="600.0">
+        <TableView fx:id="table" prefHeight="640.0" prefWidth="660.0">
             <columns>
                 <TableColumn fx:id="_particular_id" prefWidth="100.0" text="PID" />
                 <TableColumn fx:id="_particular" prefWidth="240.0" text="Particular" />
             </columns>
         </TableView>
-        <Pane layoutX="603.0" prefHeight="640.0" prefWidth="300.0" style="-fx-background-color: #f3f3f3f3;">
+        <Pane layoutX="660.0" prefHeight="640.0" prefWidth="300.0" style="-fx-background-color: #f3f3f3f3;">
             <children>
                 <Label layoutX="23.0" layoutY="30.0" text="Particulars">
                     <font>

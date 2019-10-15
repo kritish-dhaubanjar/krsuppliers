@@ -8,12 +8,12 @@ import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import krsuppliers.db.Database;
+import krsuppliers.models.Category;
 import krsuppliers.models.Particular;
-import krsuppliers.models.Pdf;
+import krsuppliers.pdf.Pdf;
 import krsuppliers.models.Sale;
 
 import java.io.File;
@@ -122,17 +122,17 @@ public class SaleController {
                     Statement query = Database.getConnection().createStatement();
                     ResultSet resultSet = query.executeQuery(queryString);
                     sales.clear();
-                    int _total = 0;
+                    float _total = 0;
                     while (resultSet.next()) {
                         sales.add(new Sale(resultSet.getInt("_id"),
                                 resultSet.getDate("date"),
                                 resultSet.getInt("particular_id"),
                                 resultSet.getString("particular"),
                                 resultSet.getInt("qty"),
-                                resultSet.getInt("rate"),
-                                resultSet.getInt("discount"),
-                                resultSet.getInt("amount")));
-                        _total += resultSet.getInt("amount");
+                                resultSet.getFloat("rate"),
+                                resultSet.getFloat("discount"),
+                                resultSet.getFloat("amount")));
+                        _total += resultSet.getFloat("amount");
                     }
 
                     total.setText(String.valueOf(_total));
@@ -153,7 +153,7 @@ public class SaleController {
             int num = query.executeUpdate("DELETE FROM sales WHERE _id = " + sale.get_id());
             if(num == 1){
                 sales.remove(sale);
-                int _total = Integer.parseInt(total.getText());
+                float _total = Float.parseFloat(total.getText());
                 _total -= sale.getAmount();
                 total.setText(String.valueOf(_total));
             }else{
@@ -171,7 +171,7 @@ public class SaleController {
             int num = query.executeUpdate("UPDATE sales SET cancel = 1 WHERE _id = " + sale.get_id());
             if(num == 1){
                 sales.remove(sale);
-                int _total = Integer.parseInt(total.getText());
+                float _total = Float.parseFloat(total.getText());
                 _total -= sale.getAmount();
                 total.setText(String.valueOf(_total));
             }else{
@@ -199,10 +199,10 @@ public class SaleController {
     private void saveSales(){
         LocalDate date_ = date.getValue();
         int qty_ = Integer.parseInt(qty.getText());
-        int rate_ = Integer.parseInt(rate.getText());
-        int discount_ = Integer.parseInt(discount.getText());
+        float rate_ = Float.parseFloat(rate.getText());
+        float discount_ = Float.parseFloat(discount.getText());
         Particular p = particular.getValue();
-        int amt = qty_ * rate_ - discount_;
+        float amt = qty_ * rate_ - discount_;
 
         try {
             if (STATE == actions.SAVE) {
@@ -211,9 +211,9 @@ public class SaleController {
                 query.setInt(2, p.get_id());
                 query.setString(3, p.getParticular());
                 query.setInt(4, qty_);
-                query.setInt(5, rate_);
-                query.setInt(6, amt);
-                query.setInt(7, discount_);
+                query.setFloat(5, rate_);
+                query.setFloat(6, amt);
+                query.setFloat(7, discount_);
                 query.execute();
                 ResultSet resultSet = query.getGeneratedKeys();
                 if(resultSet.next()) {
@@ -228,9 +228,9 @@ public class SaleController {
                 query.setInt(2, p.get_id());
                 query.setString(3, p.getParticular());
                 query.setInt(4, qty_);
-                query.setInt(5, rate_);
-                query.setInt(6, amt);
-                query.setInt(7, discount_);
+                query.setFloat(5, rate_);
+                query.setFloat(6, amt);
+                query.setFloat(7, discount_);
                 query.setInt(8, sales_id);
                 int num = query.executeUpdate();
                 if(num == 1){
@@ -251,7 +251,7 @@ public class SaleController {
         chooser.setInitialFileName(LocalDateTime.now().toString() + ".pdf");
         File file = chooser.showSaveDialog(print.getScene().getWindow());
         if(file != null) {
-            Pdf<Sale> pdf = new Pdf<>(sales, total.getText(), file);
+            Pdf<Sale> pdf = new Pdf<>(sales, total.getText(), file, Category.SALES);
             printing.visibleProperty().bind(pdf.runningProperty());
             pdf.start();
             pdf.setOnSucceeded(e -> {

@@ -2,19 +2,30 @@ package krsuppliers.models;
 
 import java.sql.Date;
 
-public class Transaction {
+public class Transaction implements Comparable<Transaction>{
 
     private int _id;
     private Date date;
     private int particular_id;
     private String particular;
     private int qty;
-    private int rate;
-    private int discount;
-    private int amount;
+    private float rate;
+    private float discount;
+    private float amount;
 
-    /*Download*/
-    public Transaction(int _id, Date date, int particular_id, String particular, int qty, int rate, int discount, int amount){
+    private Category category;
+
+    @Override
+    public int compareTo(Transaction o) {
+        if(this.date.after(o.date))
+            return  1;
+        else if (this.date.before(o.date))
+            return -1;
+        else
+            return 0;
+    }
+
+    Transaction(int _id, Date date, int particular_id, String particular, int qty, float rate, float discount, float amount){
         this._id = _id;
         this.date = date;
         this.particular_id = particular_id;
@@ -45,16 +56,23 @@ public class Transaction {
         return qty;
     }
 
-    public int getRate() {
+    public float getRate() {
         return rate;
     }
 
-    public int getDiscount() {
+    public float getDiscount() {
         return discount;
     }
 
-    public int getAmount() {
+    public float getAmount() {
         return amount;
     }
 
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 }

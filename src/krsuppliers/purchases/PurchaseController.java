@@ -11,8 +11,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import krsuppliers.db.Database;
+import krsuppliers.models.Category;
 import krsuppliers.models.Particular;
-import krsuppliers.models.Pdf;
+import krsuppliers.pdf.Pdf;
 import krsuppliers.models.Purchase;
 
 import java.io.File;
@@ -31,7 +32,7 @@ public class PurchaseController {
     @FXML
     JFXButton save, cancel, filter, print;
     @FXML
-    TextField rate, qty, discount;
+    TextField rate, qty, discount, selling_rate;
     @FXML
     DatePicker from, to, date;
     @FXML
@@ -43,7 +44,9 @@ public class PurchaseController {
     @FXML
     TableView<Purchase>table;
     @FXML
-    TableColumn<Purchase, Integer> _qty, _amount, _discount, _rate, _particular_id, _purchase_id;
+    TableColumn<Purchase, Integer> _qty, _particular_id, _purchase_id;
+    @FXML
+    TableColumn<Purchase, Float> _amount, _discount, _rate, _selling_rate;
     @FXML
     TableColumn<Purchase, String> _particular;
     @FXML
@@ -131,17 +134,18 @@ public class PurchaseController {
                     Statement query = Database.getConnection().createStatement();
                     ResultSet resultSet = query.executeQuery(queryString);
                     purchases.clear();
-                    int _total = 0;
+                    float _total = 0;
                     while (resultSet.next()){
                         purchases.add(new Purchase(resultSet.getInt("_id"),
                                 resultSet.getDate("date"),
                                 resultSet.getInt("particular_id"),
                                 resultSet.getString("particular"),
                                 resultSet.getInt("qty"),
-                                resultSet.getInt("rate"),
-                                resultSet.getInt("discount"),
-                                resultSet.getInt("amount")));
-                        _total += resultSet.getInt("amount");
+                                resultSet.getFloat("rate"),
+                                resultSet.getFloat("selling_rate"),
+                                resultSet.getFloat("discount"),
+                                resultSet.getFloat("amount")));
+                        _total += resultSet.getFloat("amount");
                     }
 
                     total.setText(String.valueOf(_total));
@@ -163,7 +167,7 @@ public class PurchaseController {
                 int num = query.executeUpdate("DELETE FROM purchases WHERE _id = " + sale.get_id());
                 if(num == 1){
                     purchases.remove(sale);
-                    int _total = Integer.parseInt(total.getText());
+                    float _total = Float.parseFloat(total.getText());
                     _total -= sale.getAmount();
                     total.setText(String.valueOf(_total));
                 }else{
@@ -180,7 +184,7 @@ public class PurchaseController {
             int num = query.executeUpdate("UPDATE purchases SET cancel = 1 WHERE _id = " + purchase.get_id());
             if(num == 1){
                 purchases.remove(purchase);
-                int _total = Integer.parseInt(total.getText());
+                float _total = Float.parseFloat(total.getText());
                 _total -= purchase.getAmount();
                 total.setText(String.valueOf(_total));
             }else{
@@ -198,6 +202,7 @@ public class PurchaseController {
         qty.setText(String.valueOf(purchase.getQty()));
         rate.setText(String.valueOf(purchase.getRate()));
         discount.setText(String.valueOf(purchase.getDiscount()));
+        selling_rate.setText(String.valueOf(purchase.getSelling_rate()));
         particulars.forEach(t->{
             if (t.get_id() == purchase.getParticular_id()) {
                 particular.setValue(t);
@@ -208,21 +213,23 @@ public class PurchaseController {
     private void savePurchases(){
         LocalDate date_ = date.getValue();
         int qty_ = Integer.parseInt(qty.getText());
-        int rate_ = Integer.parseInt(rate.getText());
-        int discount_ = Integer.parseInt(discount.getText());
+        float rate_ = Float.parseFloat(rate.getText());
+        float discount_ = Float.parseFloat(discount.getText());
+        float selling_rate_ = Float.parseFloat(selling_rate.getText());
         Particular p = particular.getValue();
-        int amt = qty_ * rate_ - discount_;
+        float amt = qty_ * rate_ - discount_;
 
         try {
             if (STATE == actions.SAVE) {
-                PreparedStatement query = Database.getConnection().prepareStatement("INSERT INTO purchases (date, particular_id, particular, qty, rate, amount, discount) VALUES(?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement query = Database.getConnection().prepareStatement("INSERT INTO purchases (date, particular_id, particular, qty, rate, selling_rate, amount, discount) VALUES(?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                 query.setDate(1, java.sql.Date.valueOf(date_));
                 query.setInt(2, p.get_id());
                 query.setString(3, p.getParticular());
                 query.setInt(4, qty_);
-                query.setInt(5, rate_);
-                query.setInt(6, amt);
-                query.setInt(7, discount_);
+                query.setFloat(5, rate_);
+                query.setFloat(6, selling_rate_);
+                query.setFloat(7, amt);
+                query.setFloat(8, discount_);
                 query.execute();
                 ResultSet resultSet = query.getGeneratedKeys();
                 if(resultSet.next()) {
@@ -232,15 +239,16 @@ public class PurchaseController {
                     showErrorDialog("Can't insert the purchase record!");
                 }
             }else if(STATE == actions.UPDATE && purchase_id !=0){
-                PreparedStatement query = Database.getConnection().prepareStatement("UPDATE purchases SET date = ?, particular_id = ?, particular = ?, qty = ?, rate = ?, amount = ?, discount = ? WHERE _id = ?" );
+                PreparedStatement query = Database.getConnection().prepareStatement("UPDATE purchases SET date = ?, particular_id = ?, particular = ?, qty = ?, rate = ?, selling_rate = ?, amount = ?, discount = ? WHERE _id = ?" );
                 query.setDate(1, java.sql.Date.valueOf(date_));
                 query.setInt(2, p.get_id());
                 query.setString(3, p.getParticular());
                 query.setInt(4, qty_);
-                query.setInt(5, rate_);
-                query.setInt(6, amt);
-                query.setInt(7, discount_);
-                query.setInt(8, purchase_id);
+                query.setFloat(5, rate_);
+                query.setFloat(6, selling_rate_);
+                query.setFloat(7, amt);
+                query.setFloat(8, discount_);
+                query.setInt(9, purchase_id);
                 int num = query.executeUpdate();
                 if(num == 1){
                     getPurchases("SELECT * FROM purchases WHERE cancel = 0 ORDER BY _id DESC LIMIT 20");
@@ -285,6 +293,7 @@ public class PurchaseController {
         _particular.setCellValueFactory(new PropertyValueFactory<>("particular"));
         _particular_id.setCellValueFactory(new PropertyValueFactory<>("particular_id"));
         _rate.setCellValueFactory(new PropertyValueFactory<>("rate"));
+        _selling_rate.setCellValueFactory(new PropertyValueFactory<>("selling_rate"));
         _date.setCellValueFactory(new PropertyValueFactory<>("date"));
         _amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
     }
@@ -294,7 +303,7 @@ public class PurchaseController {
         chooser.setInitialFileName(LocalDateTime.now().toString() + ".pdf");
         File file = chooser.showSaveDialog(print.getScene().getWindow());
         if(file != null) {
-            Pdf<Purchase> pdf = new Pdf<>(purchases, total.getText(), file);
+            Pdf<Purchase> pdf = new Pdf<>(purchases, total.getText(), file, Category.PURCHASE);
             printing.visibleProperty().bind(pdf.runningProperty());
             pdf.start();
             pdf.setOnSucceeded(e -> {
@@ -311,6 +320,7 @@ public class PurchaseController {
         qty.setText("0");
         date.setValue(LocalDate.now());
         rate.setText("0");
+        selling_rate.setText("0");
         discount.setText("0");
         STATE = actions.SAVE;
     }

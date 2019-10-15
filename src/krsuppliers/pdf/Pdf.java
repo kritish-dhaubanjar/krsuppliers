@@ -1,4 +1,4 @@
-package krsuppliers.models;
+package krsuppliers.pdf;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPCell;
@@ -7,6 +7,10 @@ import com.itextpdf.text.pdf.PdfWriter;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import krsuppliers.models.Category;
+import krsuppliers.models.Purchase;
+import krsuppliers.models.Stock;
+import krsuppliers.models.Transaction;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,11 +23,13 @@ public class Pdf<T extends Transaction> extends Service<Boolean> {
     private String total;
     private Font font = FontFactory.getFont(FontFactory.HELVETICA, 8, BaseColor.BLACK);
     private File file;
+    private Category category;
 
-    public Pdf(ObservableList<T> list, String total, File file){
+    public Pdf(ObservableList<T> list, String total, File file, Category category){
         this.list = list;
         this.file = file;
         this.total = total;
+        this.category = category;
     }
 
     @Override
@@ -41,8 +47,15 @@ public class Pdf<T extends Transaction> extends Service<Boolean> {
                 _date.setAlignment(Paragraph.ALIGN_CENTER);
                 document.add(_date);
 
-                PdfPTable table = new PdfPTable(8);
-                table.setWidths(new float[]{(float)1.5,2,1,4,1,2,2,2});
+                PdfPTable table;
+
+                if(category == Category.SALES) {
+                    table = new PdfPTable(8);
+                    table.setWidths(new float[]{(float) 1.5, 2, 1, 4, 1, 2, 2, 2});
+                }else{
+                    table = new PdfPTable(9);
+                    table.setWidths(new float[]{(float) 1.5, 2, 1, 4, 1, 2, 2, 2, 2});
+                }
                 addTableHeader(table);
                 addTableRows(table);
 
@@ -58,12 +71,21 @@ public class Pdf<T extends Transaction> extends Service<Boolean> {
     }
 
     private void addTableHeader(PdfPTable table){
-        Stream.of("#", "Date", "PID", "Particular", "Qty", "Rate", "Discount", "Amount").forEach(e->{
-            PdfPCell header = new PdfPCell();
-            header.setBackgroundColor(BaseColor.LIGHT_GRAY);
-            header.setPhrase(new Phrase(e, font));
-            table.addCell(header);
-        });
+        if(category == Category.SALES) {
+            Stream.of("#", "Date", "PID", "Particular", "Qty", "Rate", "Discount", "Amount").forEach(e -> {
+                PdfPCell header = new PdfPCell();
+                header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                header.setPhrase(new Phrase(e, font));
+                table.addCell(header);
+            });
+        }else {
+            Stream.of("#", "Date", "PID", "Particular", "Qty", "Rate", "Selling @", "Discount", "Amount").forEach(e -> {
+                PdfPCell header = new PdfPCell();
+                header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+                header.setPhrase(new Phrase(e, font));
+                table.addCell(header);
+            });
+        }
     }
 
     private void addTableRows(PdfPTable table){
@@ -74,6 +96,10 @@ public class Pdf<T extends Transaction> extends Service<Boolean> {
             table.addCell(new PdfPCell(new Phrase(t.getParticular(), font)));
             table.addCell(new PdfPCell(new Phrase(String.valueOf(t.getQty()), font)));
             table.addCell(new PdfPCell(new Phrase(String.valueOf(t.getRate()), font)));
+
+            if(category == Category.PURCHASE)
+                table.addCell(new PdfPCell(new Phrase(String.valueOf(((Purchase)t).getSelling_rate()), font)));
+
             table.addCell(new PdfPCell(new Phrase(String.valueOf(t.getDiscount()), font)));
             table.addCell(new PdfPCell(new Phrase(String.valueOf(t.getAmount()), font)));
         }
