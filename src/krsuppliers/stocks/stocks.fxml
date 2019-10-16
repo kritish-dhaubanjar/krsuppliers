@@ -90,6 +90,7 @@
                 <JFXSpinner fx:id="printing" layoutX="164.0" layoutY="28.0" prefHeight="26.0" prefWidth="23.0" />
             </children></Pane>
         <JFXSpinner fx:id="busy" layoutX="300.0" layoutY="289.0" prefWidth="50.0" />
+      <JFXCheckBox layoutX="513.0" layoutY="30.0" text="All Particulars" fx:id="all_particulars"/>
       <!--<Label layoutX="463.0" layoutY="610.0" text="Total:">-->
          <!--<font>-->
             <!--<Font name="System Bold" size="14.0" />-->

@@ -41,7 +41,7 @@ public class Pdf<T extends Transaction> extends Service<Boolean> {
                 FileOutputStream fstream = new FileOutputStream(file);
                 PdfWriter.getInstance(document, fstream);
                 document.open();
-                document.setPageSize(new Rectangle(210, 297));
+                document.setPageSize(PageSize.A4);
 
                 Paragraph _date = new Paragraph(new Chunk(LocalDateTime.now().toString(), font));
                 _date.setAlignment(Paragraph.ALIGN_CENTER);

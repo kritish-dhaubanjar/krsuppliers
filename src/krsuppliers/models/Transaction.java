@@ -25,7 +25,7 @@ public class Transaction implements Comparable<Transaction>{
             return 0;
     }
 
-    Transaction(int _id, Date date, int particular_id, String particular, int qty, float rate, float discount, float amount){
+    public Transaction(int _id, Date date, int particular_id, String particular, int qty, float rate, float discount, float amount){
         this._id = _id;
         this.date = date;
         this.particular_id = particular_id;

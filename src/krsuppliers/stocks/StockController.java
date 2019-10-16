@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
+import java.util.ListIterator;
 
 public class StockController {
     @FXML
@@ -45,7 +46,7 @@ public class StockController {
     @FXML
     JFXButton cancel, filter, print;
     @FXML
-    JFXCheckBox _sales, _purchase;
+    JFXCheckBox _sales, _purchase, all_particulars;
     @FXML
     JFXSpinner busy, printing;
 
@@ -75,7 +76,6 @@ public class StockController {
         cancel.setOnAction(e->clear());
         filter.setOnAction(e->filter());
         print.setOnAction(e->printPdf());
-
         busy.setVisible(false);
         printing.setVisible(false);
         from.setValue(LocalDate.now());
@@ -104,7 +104,11 @@ public class StockController {
         transactions.clear();
         LocalDate start = from.getValue();
         LocalDate end = to.getValue();
-        if(start!=null && end!=null && !start.isAfter(end) && (particular.getValue() != null || !pid.getText().isEmpty() )){
+
+        if(all_particulars.isSelected()){
+            getAllTransactions();
+        }
+        else if(start!=null && end!=null && !start.isAfter(end) && (particular.getValue() != null || (!pid.getText().isEmpty() && !pid.getText().equals("0")) )){
             int _pid = 0;
             if (particular.getValue()!=null){
                 _pid = particular.getValue().get_id();
@@ -222,6 +226,73 @@ public class StockController {
         _date.setCellValueFactory(new PropertyValueFactory<>("date"));
     }
 
+    private void getAllTransactions(){
+        stocks.clear();
+        transactions.clear();
+        LocalDate start = from.getValue();
+        LocalDate end = to.getValue();
+
+        if(start!=null && end!=null && !start.isAfter(end)){
+            String queryString = "";
+            if (_sales.isSelected() && _purchase.isSelected()){
+                queryString = "SELECT _id,date,particular_id,particular,qty,rate,discount,amount,cancel FROM purchases WHERE date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0 UNION SELECT _id,date,particular_id,particular,-1 * qty AS qty,rate,discount,amount,cancel FROM sales WHERE date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0 ORDER BY particular_id ASC, date ASC";
+            }else if(_sales.isSelected() && !_purchase.isSelected()){
+                queryString = "SELECT _id,date,particular_id,particular, qty * -1 AS qty,rate,discount,amount,cancel FROM sales WHERE date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0 ORDER BY particular_id ASC, date ASC";
+            }else if(!_sales.isSelected() && _purchase.isSelected()){
+                queryString = "SELECT _id,date,particular_id,particular,qty,rate,discount,amount,cancel FROM purchases WHERE date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0 ORDER BY particular_id ASC, date ASC";
+            }
+
+            final String _queryString = queryString;
+            Task<ObservableList<Stock>> task = new Task<ObservableList<Stock>>() {
+                @Override
+                protected ObservableList<Stock> call() throws Exception {
+                    try {
+                        Statement query = Database.getConnection().createStatement();
+                        ResultSet resultSet = query.executeQuery(_queryString);
+                        while (resultSet.next()) {
+                            Transaction t = new Transaction(resultSet.getInt("_id"),
+                                    resultSet.getDate("date"),
+                                    resultSet.getInt("particular_id"),
+                                    resultSet.getString("particular"),
+                                    resultSet.getInt("qty"),
+                                    resultSet.getFloat("rate"),
+                                    resultSet.getFloat("discount"),
+                                    resultSet.getFloat("amount"));
+                            transactions.add(t);
+                        }
+                    }catch (SQLException e){
+                        showErrorDialog(e.getMessage());
+                    }
+
+                    int balance = 0;
+
+                    for(int i=0; i<transactions.size(); i++){
+                        Stock stock = new Stock(transactions.get(i).get_id(),
+                                transactions.get(i).getDate(),
+                                transactions.get(i).getParticular_id(),
+                                transactions.get(i).getParticular(),
+                                transactions.get(i).getQty(),
+                                transactions.get(i).getRate(),
+                                transactions.get(i).getDiscount(),
+                                transactions.get(i).getAmount());
+                        balance += transactions.get(i).getQty();
+                        stock.setBalance(balance);
+                        stocks.add(stock);
+                        if(i< transactions.size() - 1)
+                            if(transactions.get(i).getParticular_id() != transactions.get(i+1).getParticular_id())
+                                balance = 0;
+                    }
+                    return stocks;
+                }
+            };
+
+            busy.visibleProperty().bind(task.runningProperty());
+            table.itemsProperty().bind(task.valueProperty());
+
+            new Thread(task).start();
+        }
+    }
+
     private void clear(){
         particular.setValue(null);
         _sales.setSelected(true);
@@ -243,7 +314,5 @@ public class StockController {
         alert.setHeaderText(info);
         alert.showAndWait();
     }
-
-
 
 }
