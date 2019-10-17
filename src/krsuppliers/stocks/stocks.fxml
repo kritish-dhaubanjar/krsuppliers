@@ -22,6 +22,7 @@
             <columns>
                 <TableColumn fx:id="_id" prefWidth="40.0" text="#" />
                 <TableColumn fx:id="_date" prefWidth="100.0" text="Date" />
+            <TableColumn fx:id="_bill" prefWidth="50.0" text="Bill" />
                 <TableColumn fx:id="_particular_id" prefWidth="50.0" text="PID" />
                 <TableColumn fx:id="_particular" prefWidth="120.0" text="Particular" />
                 <TableColumn fx:id="_qty" prefWidth="40.0" text="Qty" />
@@ -90,7 +91,7 @@
                 <JFXSpinner fx:id="printing" layoutX="164.0" layoutY="28.0" prefHeight="26.0" prefWidth="23.0" />
             </children></Pane>
         <JFXSpinner fx:id="busy" layoutX="300.0" layoutY="289.0" prefWidth="50.0" />
-      <JFXCheckBox layoutX="513.0" layoutY="30.0" text="All Particulars" fx:id="all_particulars"/>
+      <JFXCheckBox fx:id="all_particulars" layoutX="513.0" layoutY="30.0" text="All Particulars" />
       <!--<Label layoutX="463.0" layoutY="610.0" text="Total:">-->
          <!--<font>-->
             <!--<Font name="System Bold" size="14.0" />-->

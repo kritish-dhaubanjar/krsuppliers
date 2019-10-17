@@ -6,6 +6,7 @@ public class Stock implements Comparable<Stock>{
 
     private int _id;
     private Date date;
+    private int bill;
     private int particular_id;
     private String particular;
     private int qty;
@@ -22,9 +23,10 @@ public class Stock implements Comparable<Stock>{
             return 0;
     }
 
-    public Stock(int _id, Date date, int particular_id, String particular, int qty, float rate, float discount, float amount) {
+    public Stock(int _id, Date date, int bill, int particular_id, String particular, int qty, float rate, float discount, float amount) {
         this._id = _id;
         this.date = date;
+        this.bill = bill;
         this.particular_id = particular_id;
         this.particular = particular;
         this.qty = qty;
@@ -79,5 +81,13 @@ public class Stock implements Comparable<Stock>{
 
     public void setBalance(int balance) {
         this.balance = balance;
+    }
+
+    public int getBill() {
+        return bill;
+    }
+
+    public void setBill(int bill) {
+        this.bill = bill;
     }
 }

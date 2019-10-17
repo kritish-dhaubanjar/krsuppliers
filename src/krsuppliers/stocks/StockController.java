@@ -30,7 +30,7 @@ public class StockController {
     @FXML
     TableView<Stock> table;
     @FXML
-    TableColumn<Stock, Integer> _id, _qty, _particular_id;
+    TableColumn<Stock, Integer> _id, _qty, _particular_id, _bill;
     @FXML
     TableColumn<Stock, Float>  _rate, _discount, _amount, _balance;
     @FXML
@@ -139,6 +139,7 @@ public class StockController {
                         while (resultSet.next()) {
                             Purchase purchase = new Purchase(resultSet.getInt("_id"),
                                     resultSet.getDate("date"),
+                                    resultSet.getInt("bill"),
                                     resultSet.getInt("particular_id"),
                                     resultSet.getString("particular"),
                                     resultSet.getInt("qty"),
@@ -155,6 +156,7 @@ public class StockController {
                         while (resultSet.next()) {
                             Sale sale = new Sale(resultSet.getInt("_id"),
                                     resultSet.getDate("date"),
+                                    resultSet.getInt("bill"),
                                     resultSet.getInt("particular_id"),
                                     resultSet.getString("particular"),
                                     0 - resultSet.getInt("qty"),
@@ -175,6 +177,7 @@ public class StockController {
                 for(Transaction transaction: transactions){
                     Stock stock = new Stock(transaction.get_id(),
                             transaction.getDate(),
+                            transaction.getBill(),
                             transaction.getParticular_id(),
                             transaction.getParticular(),
                             transaction.getQty(),
@@ -224,6 +227,7 @@ public class StockController {
         _amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
         _balance.setCellValueFactory(new PropertyValueFactory<>("balance"));
         _date.setCellValueFactory(new PropertyValueFactory<>("date"));
+        _bill.setCellValueFactory(new PropertyValueFactory<>("bill"));
     }
 
     private void getAllTransactions(){
@@ -235,11 +239,11 @@ public class StockController {
         if(start!=null && end!=null && !start.isAfter(end)){
             String queryString = "";
             if (_sales.isSelected() && _purchase.isSelected()){
-                queryString = "SELECT _id,date,particular_id,particular,qty,rate,discount,amount,cancel FROM purchases WHERE date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0 UNION SELECT _id,date,particular_id,particular,-1 * qty AS qty,rate,discount,amount,cancel FROM sales WHERE date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0 ORDER BY particular_id ASC, date ASC";
+                queryString = "SELECT _id,date, bill, particular_id,particular,qty,rate,discount,amount,cancel FROM purchases WHERE date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0 UNION SELECT _id,date, bill, particular_id,particular,-1 * qty AS qty,rate,discount,amount,cancel FROM sales WHERE date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0 ORDER BY particular_id ASC, date ASC";
             }else if(_sales.isSelected() && !_purchase.isSelected()){
-                queryString = "SELECT _id,date,particular_id,particular, qty * -1 AS qty,rate,discount,amount,cancel FROM sales WHERE date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0 ORDER BY particular_id ASC, date ASC";
+                queryString = "SELECT _id,date, bill, particular_id,particular, qty * -1 AS qty,rate,discount,amount,cancel FROM sales WHERE date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0 ORDER BY particular_id ASC, date ASC";
             }else if(!_sales.isSelected() && _purchase.isSelected()){
-                queryString = "SELECT _id,date,particular_id,particular,qty,rate,discount,amount,cancel FROM purchases WHERE date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0 ORDER BY particular_id ASC, date ASC";
+                queryString = "SELECT _id,date, bill, particular_id,particular,qty,rate,discount,amount,cancel FROM purchases WHERE date >= '" + start + "' AND date <= '" + end + "' AND cancel = 0 ORDER BY particular_id ASC, date ASC";
             }
 
             final String _queryString = queryString;
@@ -252,6 +256,7 @@ public class StockController {
                         while (resultSet.next()) {
                             Transaction t = new Transaction(resultSet.getInt("_id"),
                                     resultSet.getDate("date"),
+                                    resultSet.getInt("bill"),
                                     resultSet.getInt("particular_id"),
                                     resultSet.getString("particular"),
                                     resultSet.getInt("qty"),
@@ -269,6 +274,7 @@ public class StockController {
                     for(int i=0; i<transactions.size(); i++){
                         Stock stock = new Stock(transactions.get(i).get_id(),
                                 transactions.get(i).getDate(),
+                                transactions.get(i).getBill(),
                                 transactions.get(i).getParticular_id(),
                                 transactions.get(i).getParticular(),
                                 transactions.get(i).getQty(),

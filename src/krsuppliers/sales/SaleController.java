@@ -29,7 +29,7 @@ public class SaleController {
     @FXML
     JFXButton save, cancel, filter, print;
     @FXML
-    TextField rate, qty, discount;
+    TextField rate, qty, discount, bill;
     @FXML
     DatePicker from, to, date;
     @FXML
@@ -41,7 +41,7 @@ public class SaleController {
     @FXML
     TableView<Sale>table;
     @FXML
-    TableColumn<Sale, Integer> _qty, _amount, _discount, _rate, _particular_id, _sale_id;
+    TableColumn<Sale, Integer> _qty, _amount, _discount, _rate, _particular_id, _sale_id, _bill;
     @FXML
     TableColumn<Sale, String> _particular;
     @FXML
@@ -126,6 +126,7 @@ public class SaleController {
                     while (resultSet.next()) {
                         sales.add(new Sale(resultSet.getInt("_id"),
                                 resultSet.getDate("date"),
+                                resultSet.getInt("bill"),
                                 resultSet.getInt("particular_id"),
                                 resultSet.getString("particular"),
                                 resultSet.getInt("qty"),
@@ -199,6 +200,7 @@ public class SaleController {
     private void saveSales(){
         LocalDate date_ = date.getValue();
         int qty_ = Integer.parseInt(qty.getText());
+        int bill_ = Integer.parseInt(bill.getText());
         float rate_ = Float.parseFloat(rate.getText());
         float discount_ = Float.parseFloat(discount.getText());
         Particular p = particular.getValue();
@@ -206,14 +208,15 @@ public class SaleController {
 
         try {
             if (STATE == actions.SAVE) {
-                PreparedStatement query = Database.getConnection().prepareStatement("INSERT INTO sales (date, particular_id, particular, qty, rate, amount, discount) VALUES(?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement query = Database.getConnection().prepareStatement("INSERT INTO sales (date, bill, particular_id, particular, qty, rate, amount, discount) VALUES(?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                 query.setDate(1, java.sql.Date.valueOf(date_));
-                query.setInt(2, p.get_id());
-                query.setString(3, p.getParticular());
-                query.setInt(4, qty_);
-                query.setFloat(5, rate_);
-                query.setFloat(6, amt);
-                query.setFloat(7, discount_);
+                query.setInt(2, bill_);
+                query.setInt(3, p.get_id());
+                query.setString(4, p.getParticular());
+                query.setInt(5, qty_);
+                query.setFloat(6, rate_);
+                query.setFloat(7, amt);
+                query.setFloat(8, discount_);
                 query.execute();
                 ResultSet resultSet = query.getGeneratedKeys();
                 if(resultSet.next()) {
@@ -223,15 +226,16 @@ public class SaleController {
                     showErrorDialog("Can't insert the sales record!");
                 }
             }else if(STATE == actions.UPDATE && sales_id !=0){
-                PreparedStatement query = Database.getConnection().prepareStatement("UPDATE sales SET date = ?, particular_id = ?, particular = ?, qty = ?, rate = ?, amount = ?, discount = ? WHERE _id = ?" );
+                PreparedStatement query = Database.getConnection().prepareStatement("UPDATE sales SET date = ?, bill = ? ,particular_id = ?, particular = ?, qty = ?, rate = ?, amount = ?, discount = ? WHERE _id = ?" );
                 query.setDate(1, java.sql.Date.valueOf(date_));
-                query.setInt(2, p.get_id());
-                query.setString(3, p.getParticular());
-                query.setInt(4, qty_);
-                query.setFloat(5, rate_);
-                query.setFloat(6, amt);
-                query.setFloat(7, discount_);
-                query.setInt(8, sales_id);
+                query.setInt(2, bill_);
+                query.setInt(3, p.get_id());
+                query.setString(4, p.getParticular());
+                query.setInt(5, qty_);
+                query.setFloat(6, rate_);
+                query.setFloat(7, amt);
+                query.setFloat(8, discount_);
+                query.setInt(9, sales_id);
                 int num = query.executeUpdate();
                 if(num == 1){
                     getSales("SELECT * FROM sales WHERE cancel = 0 ORDER BY _id DESC LIMIT 20");
@@ -293,6 +297,7 @@ public class SaleController {
         _discount.setCellValueFactory(new PropertyValueFactory<>("discount"));
         _particular.setCellValueFactory(new PropertyValueFactory<>("particular"));
         _particular_id.setCellValueFactory(new PropertyValueFactory<>("particular_id"));
+        _bill.setCellValueFactory(new PropertyValueFactory<>("bill"));
         _rate.setCellValueFactory(new PropertyValueFactory<>("rate"));
         _date.setCellValueFactory(new PropertyValueFactory<>("date"));
         _amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
@@ -304,6 +309,7 @@ public class SaleController {
         date.setValue(LocalDate.now());
         rate.setText("0");
         discount.setText("0");
+        bill.setText("0");
         STATE = actions.SAVE;
     }
 
