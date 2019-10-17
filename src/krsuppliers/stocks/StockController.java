@@ -144,7 +144,6 @@ public class StockController {
                                     resultSet.getString("particular"),
                                     resultSet.getInt("qty"),
                                     resultSet.getFloat("rate"),
-                                    resultSet.getFloat("selling_rate"),
                                     resultSet.getFloat("discount"),
                                     resultSet.getFloat("amount"));
                             transactions.add(purchase);

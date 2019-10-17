@@ -88,6 +88,12 @@
                     </font>
                 </Label>
                 <ComboBox fx:id="particular" layoutX="102.0" layoutY="138.0" prefHeight="25.0" prefWidth="175.0" />
+                <Label layoutX="25.0" layoutY="186.0" text="Bill No">
+                    <font>
+                        <Font name="System Bold" size="14.0" />
+                    </font>
+                </Label>
+                <TextField fx:id="bill" layoutX="101.0" layoutY="181.0" prefHeight="25.0" prefWidth="175.0" />
                 <Label layoutX="26.0" layoutY="231.0" text="Qty">
                     <font>
                         <Font name="System Bold" size="14.0" />
@@ -117,12 +123,6 @@
                </font>
             </JFXButton>
             <JFXSpinner fx:id="printing" layoutX="164.0" layoutY="28.0" prefHeight="26.0" prefWidth="23.0" />
-            <Label layoutX="25.0" layoutY="186.0" text="Bill No">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Label>
-            <TextField fx:id="bill" layoutX="101.0" layoutY="181.0" prefHeight="25.0" prefWidth="175.0" />
             </children></Pane>
       <JFXSpinner fx:id="busy" layoutX="301.0" layoutY="283.0" />
     </children>

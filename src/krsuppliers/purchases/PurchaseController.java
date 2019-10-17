@@ -32,7 +32,7 @@ public class PurchaseController {
     @FXML
     JFXButton save, cancel, filter, print;
     @FXML
-    TextField rate, qty, discount, selling_rate, bill;
+    TextField rate, qty, discount, bill;
     @FXML
     DatePicker from, to, date;
     @FXML
@@ -46,7 +46,7 @@ public class PurchaseController {
     @FXML
     TableColumn<Purchase, Integer> _qty, _particular_id, _purchase_id, _bill;
     @FXML
-    TableColumn<Purchase, Float> _amount, _discount, _rate, _selling_rate;
+    TableColumn<Purchase, Float> _amount, _discount, _rate;
     @FXML
     TableColumn<Purchase, String> _particular;
     @FXML
@@ -143,7 +143,6 @@ public class PurchaseController {
                                 resultSet.getString("particular"),
                                 resultSet.getInt("qty"),
                                 resultSet.getFloat("rate"),
-                                resultSet.getFloat("selling_rate"),
                                 resultSet.getFloat("discount"),
                                 resultSet.getFloat("amount")));
                         _total += resultSet.getFloat("amount");
@@ -203,7 +202,6 @@ public class PurchaseController {
         qty.setText(String.valueOf(purchase.getQty()));
         rate.setText(String.valueOf(purchase.getRate()));
         discount.setText(String.valueOf(purchase.getDiscount()));
-        selling_rate.setText(String.valueOf(purchase.getSelling_rate()));
         particulars.forEach(t->{
             if (t.get_id() == purchase.getParticular_id()) {
                 particular.setValue(t);
@@ -217,22 +215,20 @@ public class PurchaseController {
         int bill_ = Integer.parseInt(bill.getText());
         float rate_ = Float.parseFloat(rate.getText());
         float discount_ = Float.parseFloat(discount.getText());
-        float selling_rate_ = Float.parseFloat(selling_rate.getText());
         Particular p = particular.getValue();
         float amt = qty_ * rate_ - discount_;
 
         try {
             if (STATE == actions.SAVE) {
-                PreparedStatement query = Database.getConnection().prepareStatement("INSERT INTO purchases (date, bill, particular_id, particular, qty, rate, selling_rate, amount, discount) VALUES(?,?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
+                PreparedStatement query = Database.getConnection().prepareStatement("INSERT INTO purchases (date, bill, particular_id, particular, qty, rate, amount, discount) VALUES(?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
                 query.setDate(1, java.sql.Date.valueOf(date_));
                 query.setInt(2, bill_);
                 query.setInt(3, p.get_id());
                 query.setString(4, p.getParticular());
                 query.setInt(5, qty_);
                 query.setFloat(6, rate_);
-                query.setFloat(7, selling_rate_);
-                query.setFloat(8, amt);
-                query.setFloat(9, discount_);
+                query.setFloat(7, amt);
+                query.setFloat(8, discount_);
                 query.execute();
                 ResultSet resultSet = query.getGeneratedKeys();
                 if(resultSet.next()) {
@@ -242,17 +238,16 @@ public class PurchaseController {
                     showErrorDialog("Can't insert the purchase record!");
                 }
             }else if(STATE == actions.UPDATE && purchase_id !=0){
-                PreparedStatement query = Database.getConnection().prepareStatement("UPDATE purchases SET date = ?, bill = ?, particular_id = ?, particular = ?, qty = ?, rate = ?, selling_rate = ?, amount = ?, discount = ? WHERE _id = ?" );
+                PreparedStatement query = Database.getConnection().prepareStatement("UPDATE purchases SET date = ?, bill = ?, particular_id = ?, particular = ?, qty = ?, rate = ?, amount = ?, discount = ? WHERE _id = ?" );
                 query.setDate(1, java.sql.Date.valueOf(date_));
                 query.setInt(2, bill_);
                 query.setInt(3, p.get_id());
                 query.setString(4, p.getParticular());
                 query.setInt(5, qty_);
                 query.setFloat(6, rate_);
-                query.setFloat(7, selling_rate_);
-                query.setFloat(8, amt);
-                query.setFloat(9, discount_);
-                query.setInt(10, purchase_id);
+                query.setFloat(7, amt);
+                query.setFloat(8, discount_);
+                query.setInt(9, purchase_id);
                 int num = query.executeUpdate();
                 if(num == 1){
                     getPurchases("SELECT * FROM purchases WHERE cancel = 0 ORDER BY _id DESC LIMIT 20");
@@ -298,7 +293,6 @@ public class PurchaseController {
         _particular_id.setCellValueFactory(new PropertyValueFactory<>("particular_id"));
         _bill.setCellValueFactory(new PropertyValueFactory<>("bill"));
         _rate.setCellValueFactory(new PropertyValueFactory<>("rate"));
-        _selling_rate.setCellValueFactory(new PropertyValueFactory<>("selling_rate"));
         _date.setCellValueFactory(new PropertyValueFactory<>("date"));
         _amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
     }
@@ -325,7 +319,6 @@ public class PurchaseController {
         qty.setText("0");
         date.setValue(LocalDate.now());
         rate.setText("0");
-        selling_rate.setText("0");
         discount.setText("0");
         bill.setText("0");
         STATE = actions.SAVE;

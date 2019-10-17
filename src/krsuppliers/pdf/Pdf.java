@@ -49,13 +49,8 @@ public class Pdf<T extends Transaction> extends Service<Boolean> {
 
                 PdfPTable table;
 
-                if(category == Category.SALES) {
-                    table = new PdfPTable(9);
-                    table.setWidths(new float[]{(float) 1.5, 2, 1, 1, 4, 1, 2, 2, 2});
-                }else{
-                    table = new PdfPTable(10);
-                    table.setWidths(new float[]{(float) 1.5, 2, 1, 1, 4, 1, 2, 2, 2, 2});
-                }
+                table = new PdfPTable(9);
+                table.setWidths(new float[]{(float) 1.5, 2, 1, 1, 4, 1, 2, 2, 2});
                 addTableHeader(table);
                 addTableRows(table);
 
@@ -97,10 +92,6 @@ public class Pdf<T extends Transaction> extends Service<Boolean> {
             table.addCell(new PdfPCell(new Phrase(t.getParticular(), font)));
             table.addCell(new PdfPCell(new Phrase(String.valueOf(t.getQty()), font)));
             table.addCell(new PdfPCell(new Phrase(String.valueOf(t.getRate()), font)));
-
-            if(category == Category.PURCHASE)
-                table.addCell(new PdfPCell(new Phrase(String.valueOf(((Purchase)t).getSelling_rate()), font)));
-
             table.addCell(new PdfPCell(new Phrase(String.valueOf(t.getDiscount()), font)));
             table.addCell(new PdfPCell(new Phrase(String.valueOf(t.getAmount()), font)));
         }
