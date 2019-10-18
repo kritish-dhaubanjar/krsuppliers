@@ -9,7 +9,7 @@ public class Transaction implements Comparable<Transaction>{
     private int bill;
     private int particular_id;
     private String particular;
-    private int qty;
+    private float qty;
     private float rate;
     private float discount;
     private float amount;
@@ -26,7 +26,7 @@ public class Transaction implements Comparable<Transaction>{
             return 0;
     }
 
-    public Transaction(int _id, Date date, int bill, int particular_id,  String particular, int qty, float rate, float discount, float amount){
+    public Transaction(int _id, Date date, int bill, int particular_id,  String particular, float qty, float rate, float discount, float amount){
         this._id = _id;
         this.date = date;
         this.bill = bill;
@@ -54,7 +54,7 @@ public class Transaction implements Comparable<Transaction>{
         return particular;
     }
 
-    public int getQty() {
+    public float getQty() {
         return qty;
     }
 

@@ -66,21 +66,12 @@ public class Pdf<T extends Transaction> extends Service<Boolean> {
     }
 
     private void addTableHeader(PdfPTable table){
-        if(category == Category.SALES) {
-            Stream.of("#", "Date", "PID", "Particular", "Qty", "Rate", "Discount", "Amount").forEach(e -> {
-                PdfPCell header = new PdfPCell();
-                header.setBackgroundColor(BaseColor.LIGHT_GRAY);
-                header.setPhrase(new Phrase(e, font));
-                table.addCell(header);
-            });
-        }else {
-            Stream.of("#", "Date", "Bill", "PID", "Particular", "Qty", "Rate", "Selling @", "Discount", "Amount").forEach(e -> {
-                PdfPCell header = new PdfPCell();
-                header.setBackgroundColor(BaseColor.LIGHT_GRAY);
-                header.setPhrase(new Phrase(e, font));
-                table.addCell(header);
-            });
-        }
+        Stream.of("#", "Date", "Bill", "PID", "Particular", "Qty", "Rate", "Discount", "Amount").forEach(e -> {
+            PdfPCell header = new PdfPCell();
+            header.setBackgroundColor(BaseColor.LIGHT_GRAY);
+            header.setPhrase(new Phrase(e, font));
+            table.addCell(header);
+        });
     }
 
     private void addTableRows(PdfPTable table){

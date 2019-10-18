@@ -6,30 +6,42 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.StringConverter;
 import krsuppliers.db.Database;
+import krsuppliers.models.Balance;
+import krsuppliers.models.DateConverter;
 import krsuppliers.models.Particular;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import javax.xml.crypto.Data;
+import java.sql.*;
+import java.time.LocalDate;
+import java.time.chrono.Chronology;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 
 public class ParticularsController {
     @FXML
-    TableView<Particular> table;
+    TableView<Balance> table;
     @FXML
-    TableColumn<Particular, Integer> _particular_id;
+    TableColumn<Balance, Integer> _id, _particular_id, _bill;
     @FXML
-    TableColumn<Particular, String> _particular;
+    TableColumn<Balance, String> _particular;
+    @FXML
+    TableColumn<Balance, Float> _qty, _rate, _discount, _amount;
+    @FXML
+    TableColumn<Balance, Date> _date;
     @FXML
     JFXButton save, cancel;
     @FXML
-    TextField name;
+    TextField particular, bill, qty, rate, discount;
+    @FXML
+    DatePicker date;
 
-    int pid = 0;
+    private int pid = 0;
 
     enum actions {SAVE, UPDATE}
 
-    private final static ObservableList<Particular> particulars = FXCollections.observableArrayList();
+    private final static ObservableList<Balance> particulars = FXCollections.observableArrayList();
     private actions action = actions.SAVE;
 
     @FXML
@@ -44,14 +56,37 @@ public class ParticularsController {
     }
 
     private void save(){
-        String _name = name.getText();
+        String _particular = particular.getText();
+        Date date_ = Date.valueOf(date.getValue());
+        float qty_ = Float.parseFloat(qty.getText());
+        int bill_ = Integer.parseInt(bill.getText());
+        float rate_ = Float.parseFloat(rate.getText());
+        float discount_ = Float.parseFloat(discount.getText());
+        float amt = qty_ * rate_ - discount_;
+
         try {
-            Statement statement = Database.getConnection().createStatement();
             if(action == actions.UPDATE && pid!=0) {
-                int num = statement.executeUpdate("UPDATE particulars SET particular = '" + _name + "' WHERE _id = " + pid);
+                PreparedStatement statement = Database.getConnection().prepareStatement("UPDATE particulars SET particular = ? WHERE _id = ?");
+
+                statement.setString(1, _particular);
+                statement.setInt(2, pid);
+
+                int num = statement.executeUpdate();
                 if(num == 1){
-                    statement.executeUpdate("UPDATE sales SET particular = '" + _name +"' WHERE particular_id = " + pid);
-                    statement.executeUpdate("UPDATE purchases SET particular = '" + _name +"' WHERE particular_id = " + pid);
+                    statement = Database.getConnection().prepareStatement("UPDATE balance SET date = ?, bill = ?, particular = ?, qty = ?, rate = ?, discount = ?, amount = ? WHERE particular_id = ?");
+                    statement.setDate(1, date_);
+                    statement.setInt(2, bill_);
+                    statement.setString(3, _particular);
+                    statement.setFloat(4, qty_);
+                    statement.setFloat(5, rate_);
+                    statement.setFloat(6, discount_);
+                    statement.setFloat(7, amt);
+                    statement.setInt(8, pid);
+                    num = statement.executeUpdate();
+                }
+                if(num == 1){
+                    statement.executeUpdate("UPDATE sales SET particular = '" + _particular +"' WHERE particular_id = " + pid);
+                    statement.executeUpdate("UPDATE purchases SET particular = '" + _particular +"' WHERE particular_id = " + pid);
                     clear();
                 }else{
                     showErrorDialog("Oops! Something went wrong!");
@@ -60,7 +95,23 @@ public class ParticularsController {
                 action = actions.SAVE;
                 setParticulars();
             }else if(action == actions.SAVE){
-                int num = statement.executeUpdate("INSERT INTO particulars(particular) VALUES('" + _name + "')");
+                PreparedStatement statement = Database.getConnection().prepareStatement("INSERT INTO particulars(particular) VALUES(?)", Statement.RETURN_GENERATED_KEYS);
+                statement.setString(1, _particular);
+                statement.execute();
+                ResultSet resultSet = statement.getGeneratedKeys();
+                if(resultSet.next()){
+                    statement = Database.getConnection().prepareStatement("INSERT INTO balance(date, bill,  particular_id, particular, qty, rate, discount, amount) VALUES(?,?,?,?,?,?,?,?)");
+                    statement.setDate(1, date_);
+                    statement.setInt(2, bill_);
+                    statement.setInt(3, resultSet.getInt(1));
+                    statement.setString(4, _particular);
+                    statement.setFloat(5, qty_);
+                    statement.setFloat(6, rate_);
+                    statement.setFloat(7, discount_);
+                    statement.setFloat(8, amt);
+                }
+
+                int num = statement.executeUpdate();
                 if (num == 1) {
                     setParticulars();
                     clear();
@@ -73,8 +124,13 @@ public class ParticularsController {
         }
     }
 
-    private void save(Particular p){
-        name.setText(p.getParticular());
+    private void save(Balance p){
+        particular.setText(p.getParticular());
+        date.setValue(p.getDate().toLocalDate());
+        bill.setText(String.valueOf(p.getBill()));
+        rate.setText(String.valueOf(p.getRate()));
+        discount.setText(String.valueOf(p.getDiscount()));
+        qty.setText(String.valueOf(p.getQty()));
         pid = p.get_id();
         action = actions.UPDATE;
     }
@@ -91,7 +147,7 @@ public class ParticularsController {
         contextMenu.getItems().addAll(edit);
 
         table.setRowFactory(e->{
-            TableRow<Particular> p = new TableRow<>();
+            TableRow<Balance> p = new TableRow<>();
             p.emptyProperty().addListener((observable, oldValue, newValue) -> {
                 p.setContextMenu(contextMenu);
             });
@@ -99,20 +155,35 @@ public class ParticularsController {
         });
 
         table.setItems(particulars);
+        _id.setCellValueFactory(new PropertyValueFactory<>("_id"));
         _particular.setCellValueFactory(new PropertyValueFactory<>("particular"));
-        _particular_id.setCellValueFactory(new PropertyValueFactory<>("_id"));
+        _particular_id.setCellValueFactory(new PropertyValueFactory<>("particular_id"));
+        _date.setCellValueFactory(new PropertyValueFactory<>("date"));
+        _bill.setCellValueFactory(new PropertyValueFactory<>("bill"));
+        _qty.setCellValueFactory(new PropertyValueFactory<>("qty"));
+        _discount.setCellValueFactory(new PropertyValueFactory<>("discount"));
+        _amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
+        _rate.setCellValueFactory(new PropertyValueFactory<>("rate"));
     }
 
     private void setParticulars(){
         try{
             particulars.clear();
             Statement query = Database.getConnection().createStatement();
-            ResultSet resultSet = query.executeQuery("SELECT * FROM particulars");
+            ResultSet resultSet = query.executeQuery("SELECT * FROM balance");
 
             while (resultSet.next()){
-                particulars.add(new Particular(
+                particulars.add(new Balance(
                         resultSet.getInt("_id"),
-                        resultSet.getString("particular"))
+                        resultSet.getDate("date"),
+                        resultSet.getInt("bill"),
+                        resultSet.getInt("particular_id"),
+                        resultSet.getString("particular"),
+                        resultSet.getFloat("qty"),
+                        resultSet.getFloat("rate"),
+                        resultSet.getFloat("discount"),
+                        resultSet.getFloat("amount")
+                        )
                 );
             }
         }catch (SQLException e){
@@ -121,7 +192,13 @@ public class ParticularsController {
     }
 
     private void clear(){
-        name.setText("");
+        particular.setText("");
+        bill.setText("0");
+        qty.setText("0");
+        rate.setText("0");
+        discount.setText("0");
+
+        date.setConverter(new DateConverter(date));
     }
 
     private void showErrorDialog(String error){

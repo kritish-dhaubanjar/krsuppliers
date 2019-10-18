@@ -12,19 +12,16 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import krsuppliers.db.Database;
 import krsuppliers.models.Category;
+import krsuppliers.models.DateConverter;
 import krsuppliers.models.Particular;
 import krsuppliers.pdf.Pdf;
 import krsuppliers.models.Purchase;
 
 import java.io.File;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -95,6 +92,10 @@ public class PurchaseController {
             }
         });
 
+        from.setConverter(new DateConverter(from));
+        to.setConverter(new DateConverter(to));
+        date.setConverter(new DateConverter(date));
+
         from.setValue(LocalDate.now());
         to.setValue(LocalDate.now());
         getPurchases("SELECT * FROM purchases WHERE cancel = 0 ORDER BY _id DESC LIMIT 20");
@@ -112,7 +113,7 @@ public class PurchaseController {
     private void setParticulars(){
         try{
             Statement query = Database.getConnection().createStatement();
-            ResultSet resultSet = query.executeQuery("SELECT * FROM particulars");
+            ResultSet resultSet = query.executeQuery("SELECT _id, particular FROM particulars");
 
             while (resultSet.next()){
                 particulars.add(new Particular(
@@ -141,7 +142,7 @@ public class PurchaseController {
                                 resultSet.getInt("bill"),
                                 resultSet.getInt("particular_id"),
                                 resultSet.getString("particular"),
-                                resultSet.getInt("qty"),
+                                resultSet.getFloat("qty"),
                                 resultSet.getFloat("rate"),
                                 resultSet.getFloat("discount"),
                                 resultSet.getFloat("amount")));
@@ -202,6 +203,7 @@ public class PurchaseController {
         qty.setText(String.valueOf(purchase.getQty()));
         rate.setText(String.valueOf(purchase.getRate()));
         discount.setText(String.valueOf(purchase.getDiscount()));
+        bill.setText(String.valueOf(purchase.getBill()));
         particulars.forEach(t->{
             if (t.get_id() == purchase.getParticular_id()) {
                 particular.setValue(t);
@@ -210,8 +212,8 @@ public class PurchaseController {
     }
 
     private void savePurchases(){
-        LocalDate date_ = date.getValue();
-        int qty_ = Integer.parseInt(qty.getText());
+        Date date_ = Date.valueOf(date.getValue());
+        float qty_ = Float.parseFloat(qty.getText());
         int bill_ = Integer.parseInt(bill.getText());
         float rate_ = Float.parseFloat(rate.getText());
         float discount_ = Float.parseFloat(discount.getText());
@@ -221,11 +223,11 @@ public class PurchaseController {
         try {
             if (STATE == actions.SAVE) {
                 PreparedStatement query = Database.getConnection().prepareStatement("INSERT INTO purchases (date, bill, particular_id, particular, qty, rate, amount, discount) VALUES(?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-                query.setDate(1, java.sql.Date.valueOf(date_));
+                query.setDate(1, date_);
                 query.setInt(2, bill_);
                 query.setInt(3, p.get_id());
                 query.setString(4, p.getParticular());
-                query.setInt(5, qty_);
+                query.setFloat(5, qty_);
                 query.setFloat(6, rate_);
                 query.setFloat(7, amt);
                 query.setFloat(8, discount_);
@@ -239,11 +241,11 @@ public class PurchaseController {
                 }
             }else if(STATE == actions.UPDATE && purchase_id !=0){
                 PreparedStatement query = Database.getConnection().prepareStatement("UPDATE purchases SET date = ?, bill = ?, particular_id = ?, particular = ?, qty = ?, rate = ?, amount = ?, discount = ? WHERE _id = ?" );
-                query.setDate(1, java.sql.Date.valueOf(date_));
+                query.setDate(1, date_);
                 query.setInt(2, bill_);
                 query.setInt(3, p.get_id());
                 query.setString(4, p.getParticular());
-                query.setInt(5, qty_);
+                query.setFloat(5, qty_);
                 query.setFloat(6, rate_);
                 query.setFloat(7, amt);
                 query.setFloat(8, discount_);

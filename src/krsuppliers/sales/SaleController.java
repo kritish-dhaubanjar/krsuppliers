@@ -12,11 +12,13 @@ import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import krsuppliers.db.Database;
 import krsuppliers.models.Category;
+import krsuppliers.models.DateConverter;
 import krsuppliers.models.Particular;
 import krsuppliers.pdf.Pdf;
 import krsuppliers.models.Sale;
 
 import java.io.File;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -82,6 +84,10 @@ public class SaleController {
             }
         });
 
+        from.setConverter(new DateConverter(from));
+        to.setConverter(new DateConverter(to));
+        date.setConverter(new DateConverter(date));
+
         from.setValue(LocalDate.now());
         to.setValue(LocalDate.now());
 
@@ -100,7 +106,7 @@ public class SaleController {
     private void setParticulars(){
         try{
             Statement query = Database.getConnection().createStatement();
-            ResultSet resultSet = query.executeQuery("SELECT * FROM particulars");
+            ResultSet resultSet = query.executeQuery("SELECT _id, particular FROM particulars");
 
             while (resultSet.next()){
                 particulars.add(new Particular(
@@ -129,7 +135,7 @@ public class SaleController {
                                 resultSet.getInt("bill"),
                                 resultSet.getInt("particular_id"),
                                 resultSet.getString("particular"),
-                                resultSet.getInt("qty"),
+                                resultSet.getFloat("qty"),
                                 resultSet.getFloat("rate"),
                                 resultSet.getFloat("discount"),
                                 resultSet.getFloat("amount")));
@@ -190,6 +196,7 @@ public class SaleController {
         qty.setText(String.valueOf(sale.getQty()));
         rate.setText(String.valueOf(sale.getRate()));
         discount.setText(String.valueOf(sale.getDiscount()));
+        bill.setText(String.valueOf(sale.getBill()));
         particulars.forEach(t->{
             if (t.get_id() == sale.getParticular_id()) {
                 particular.setValue(t);
@@ -198,8 +205,8 @@ public class SaleController {
     }
 
     private void saveSales(){
-        LocalDate date_ = date.getValue();
-        int qty_ = Integer.parseInt(qty.getText());
+        Date date_ = Date.valueOf(date.getValue());
+        float qty_ = Float.parseFloat(qty.getText());
         int bill_ = Integer.parseInt(bill.getText());
         float rate_ = Float.parseFloat(rate.getText());
         float discount_ = Float.parseFloat(discount.getText());
@@ -209,11 +216,11 @@ public class SaleController {
         try {
             if (STATE == actions.SAVE) {
                 PreparedStatement query = Database.getConnection().prepareStatement("INSERT INTO sales (date, bill, particular_id, particular, qty, rate, amount, discount) VALUES(?,?,?,?,?,?,?,?)", Statement.RETURN_GENERATED_KEYS);
-                query.setDate(1, java.sql.Date.valueOf(date_));
+                query.setDate(1, date_);
                 query.setInt(2, bill_);
                 query.setInt(3, p.get_id());
                 query.setString(4, p.getParticular());
-                query.setInt(5, qty_);
+                query.setFloat(5, qty_);
                 query.setFloat(6, rate_);
                 query.setFloat(7, amt);
                 query.setFloat(8, discount_);
@@ -227,11 +234,11 @@ public class SaleController {
                 }
             }else if(STATE == actions.UPDATE && sales_id !=0){
                 PreparedStatement query = Database.getConnection().prepareStatement("UPDATE sales SET date = ?, bill = ? ,particular_id = ?, particular = ?, qty = ?, rate = ?, amount = ?, discount = ? WHERE _id = ?" );
-                query.setDate(1, java.sql.Date.valueOf(date_));
+                query.setDate(1, date_);
                 query.setInt(2, bill_);
                 query.setInt(3, p.get_id());
                 query.setString(4, p.getParticular());
-                query.setInt(5, qty_);
+                query.setFloat(5, qty_);
                 query.setFloat(6, rate_);
                 query.setFloat(7, amt);
                 query.setFloat(8, discount_);
