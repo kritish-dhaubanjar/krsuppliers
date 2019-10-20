@@ -43,8 +43,8 @@ public class PdfStock extends Service<Boolean> {
                 _date.setAlignment(Paragraph.ALIGN_CENTER);
                 document.add(_date);
 
-                PdfPTable table = new PdfPTable(9);
-                table.setWidths(new float[]{(float) 1.5, 2, 1, 4, 1, 2, 2, 2, 2});
+                PdfPTable table = new PdfPTable(10);
+                table.setWidths(new float[]{(float) 1.5, 2,1, 1, 4, 1, 2, 2, 2, 2});
 
                 addTableHeader(table);
                 addTableRows(table);
@@ -57,7 +57,7 @@ public class PdfStock extends Service<Boolean> {
     }
 
     private void addTableHeader(PdfPTable table){
-        Stream.of("#", "Date", "PID", "Particular", "Qty", "Rate", "Discount", "Amount", "Balance Qty").forEach(e -> {
+        Stream.of("#", "Date", "Bill","PID", "Particular", "Qty", "Rate", "Discount", "Amount", "Balance Qty").forEach(e -> {
             PdfPCell header = new PdfPCell();
             header.setBackgroundColor(BaseColor.LIGHT_GRAY);
             header.setPhrase(new Phrase(e, font));
@@ -69,6 +69,7 @@ public class PdfStock extends Service<Boolean> {
         for (Stock t:list) {
             table.addCell(new PdfPCell(new Phrase(String.valueOf(t.get_id()), font)));
             table.addCell(new PdfPCell(new Phrase(t.getDate().toString(), font)));
+            table.addCell(new PdfPCell(new Phrase(String.valueOf(t.getBill()), font)));
             table.addCell(new PdfPCell(new Phrase(String.valueOf(t.getParticular_id()), font)));
             table.addCell(new PdfPCell(new Phrase(t.getParticular(), font)));
             table.addCell(new PdfPCell(new Phrase(String.valueOf(t.getQty()), font)));
