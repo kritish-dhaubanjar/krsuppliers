@@ -1,8 +1,10 @@
 package krsuppliers.particulars;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXSpinner;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -27,7 +29,7 @@ public class ParticularsController {
     @FXML
     TableColumn<Balance, String> _particular;
     @FXML
-    TableColumn<Balance, Float> _qty, _rate, _discount, _amount;
+    TableColumn<Balance, Float> _qty, _rate, _discount, _amount, _selling_rate;
     @FXML
     TableColumn<Balance, Date> _date;
     @FXML
@@ -36,19 +38,21 @@ public class ParticularsController {
     TextField particular, bill, qty, rate, discount;
     @FXML
     DatePicker date;
+    @FXML
+    JFXSpinner busy;
 
     private int pid = 0;
 
     enum actions {SAVE, UPDATE}
 
-    private final static ObservableList<Balance> particulars = FXCollections.observableArrayList();
+    private static ObservableList<Balance> particulars = FXCollections.observableArrayList();
     private actions action = actions.SAVE;
 
     @FXML
     public void initialize(){
         setTableViewBinding();
-        particulars.clear();
         setParticulars();
+        particulars.clear();
         clear();
         cancel.setOnAction(e->clear());
         action = actions.SAVE;
@@ -164,31 +168,45 @@ public class ParticularsController {
         _discount.setCellValueFactory(new PropertyValueFactory<>("discount"));
         _amount.setCellValueFactory(new PropertyValueFactory<>("amount"));
         _rate.setCellValueFactory(new PropertyValueFactory<>("rate"));
+        _selling_rate.setCellValueFactory(new PropertyValueFactory<>("selling_rate"));
     }
 
     private void setParticulars(){
-        try{
-            particulars.clear();
-            Statement query = Database.getConnection().createStatement();
-            ResultSet resultSet = query.executeQuery("SELECT * FROM balance");
+        particulars.clear();
 
-            while (resultSet.next()){
-                particulars.add(new Balance(
-                        resultSet.getInt("_id"),
-                        resultSet.getDate("date"),
-                        resultSet.getInt("bill"),
-                        resultSet.getInt("particular_id"),
-                        resultSet.getString("particular"),
-                        resultSet.getFloat("qty"),
-                        resultSet.getFloat("rate"),
-                        resultSet.getFloat("discount"),
-                        resultSet.getFloat("amount")
-                        )
-                );
+        Task<ObservableList<Balance>> task = new Task<ObservableList<Balance>>() {
+            @Override
+            protected ObservableList<Balance> call() throws Exception {
+                try{
+                    Statement query = Database.getConnection().createStatement();
+                    ResultSet resultSet = query.executeQuery("SELECT * FROM balance");
+
+                    while (resultSet.next()){
+                        particulars.add(new Balance(
+                                        resultSet.getInt("_id"),
+                                        resultSet.getDate("date"),
+                                        resultSet.getInt("bill"),
+                                        resultSet.getInt("particular_id"),
+                                        resultSet.getString("particular"),
+                                        resultSet.getFloat("qty"),
+                                        resultSet.getFloat("rate"),
+                                        resultSet.getFloat("discount"),
+                                        resultSet.getFloat("amount")
+                                )
+                        );
+                    }
+                    return particulars;
+                }catch (SQLException e){
+                    showErrorDialog(e.getMessage());
+                }
+                return null;
             }
-        }catch (SQLException e){
-            showErrorDialog(e.getMessage());
-        }
+        };
+
+        busy.visibleProperty().bind(task.runningProperty());
+        table.itemsProperty().bind(task.valueProperty());
+
+        new Thread(task).start();
     }
 
     private void clear(){

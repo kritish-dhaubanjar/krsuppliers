@@ -85,4 +85,8 @@ public class Transaction implements Comparable<Transaction>{
     public void setBill(int bill) {
         this.bill = bill;
     }
+
+    public Double getSelling_rate(){
+        return Double.parseDouble(String.format("%.2f", this.rate + this.rate * 0.2));
+    }
 }

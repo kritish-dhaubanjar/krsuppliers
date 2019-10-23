@@ -62,11 +62,9 @@ public class SaleController {
         clear();
         printing.setVisible(false);
         busy.setVisible(false);
-        /*
-        particular.setOnAction((e)->{
-            System.out.println(particular.getSelectionModel().getSelectedItem());
-        });
-        */
+
+        particular.setOnAction((e)->getParticularSellingRate());
+
 
         setTableViewBinding();
         setParticulars();
@@ -114,9 +112,27 @@ public class SaleController {
                         resultSet.getString("particular"))
                 );
             }
+            Collections.sort(particulars);
             particular.getItems().addAll(particulars);
         }catch (SQLException e){
             showErrorDialog(e.getMessage());
+        }
+    }
+
+    private void getParticularSellingRate(){
+        int _id = particular.getSelectionModel().getSelectedItem().get_id();
+        try {
+            PreparedStatement statement = Database.getConnection().prepareStatement("SELECT MAX(rate) AS rate FROM balance WHERE particular_id = ?");
+            statement.setInt(1, _id);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                float _rate = resultSet.getFloat("rate");
+                double selling_rate = _rate + 0.2 * _rate;
+                rate.setText(String.format("%.2f", selling_rate));
+                break;
+            }
+        }catch (SQLException err){
+            showErrorDialog(err.getMessage());
         }
     }
 

@@ -7,5 +7,4 @@ public class Balance extends Transaction {
         super(_id, date, bill, particular_id, particular, qty, rate, discount, amount);
         super.setCategory(Category.BALANCE);
     }
-
 }

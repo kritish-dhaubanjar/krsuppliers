@@ -90,4 +90,8 @@ public class Stock implements Comparable<Stock>{
     public void setBill(int bill) {
         this.bill = bill;
     }
+
+    public Double getSelling_rate(){
+        return Double.parseDouble(String.format("%.2f", this.rate + this.rate * 0.2));
+    }
 }
