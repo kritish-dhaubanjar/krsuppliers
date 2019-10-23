@@ -2,7 +2,7 @@ package krsuppliers.models;
 
 import java.sql.Date;
 
-public class Particular {
+public class Particular implements Comparable<Particular> {
     private int _id;
     private Date date;
     private int bill;
@@ -11,6 +11,11 @@ public class Particular {
     private float rate;
     private float discount;
     private float amount;
+
+    @Override
+    public int compareTo(Particular o) {
+        return this.particular.compareTo(o.particular);
+    }
 
     public Particular(int _id, String particular){
         this._id = _id;

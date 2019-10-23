@@ -22,6 +22,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -70,11 +71,8 @@ public class PurchaseController {
         printing.setVisible(false);
         busy.setVisible(false);
 
-        /*
-        particular.setOnAction((e)->{
-            System.out.println(particular.getSelectionModel().getSelectedItem());
-        });
-        */
+        particular.setOnAction((e)->getParticularRate());
+
 
         setTableViewBinding();
         setParticulars();
@@ -110,6 +108,22 @@ public class PurchaseController {
         }
     }
 
+    private void getParticularRate(){
+        int _id = particular.getSelectionModel().getSelectedItem().get_id();
+        try {
+            PreparedStatement statement = Database.getConnection().prepareStatement("SELECT MAX(rate) AS rate FROM balance WHERE particular_id = ?");
+            statement.setInt(1, _id);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()){
+                float _rate = resultSet.getFloat("rate");
+                rate.setText(String.format("%.2f", _rate));
+                break;
+            }
+        }catch (SQLException err){
+            showErrorDialog(err.getMessage());
+        }
+    }
+
     private void setParticulars(){
         try{
             Statement query = Database.getConnection().createStatement();
@@ -121,6 +135,7 @@ public class PurchaseController {
                         resultSet.getString("particular"))
                 );
             }
+            Collections.sort(particulars);
             particular.getItems().addAll(particulars);
         }catch (SQLException e){
             showErrorDialog(e.getMessage());

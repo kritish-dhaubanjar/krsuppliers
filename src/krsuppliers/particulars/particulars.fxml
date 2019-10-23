@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXSpinner?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
@@ -21,6 +22,7 @@
                 <TableColumn fx:id="_particular" prefWidth="140.0" text="Particular" />
             <TableColumn fx:id="_qty" prefWidth="60.0" text="Qty" />
             <TableColumn fx:id="_rate" prefWidth="70.0" text="Rate" />
+            <TableColumn fx:id="_selling_rate" prefWidth="90.0" text="Selling Rate" />
             <TableColumn fx:id="_discount" prefWidth="75.0" text="Discount" />
             <TableColumn fx:id="_amount" prefWidth="70.0" text="Amount" />
             </columns>
@@ -79,6 +81,7 @@
                </font>
             </JFXButton>
             </children></Pane>
+      <JFXSpinner fx:id="busy" layoutX="303.0" layoutY="267.0" />
     </children>
 
 </AnchorPane>
